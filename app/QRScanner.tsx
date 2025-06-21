@@ -1,102 +1,155 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, {useEffect, useState} from "react";
+import {Button, Dimensions, SafeAreaView, StyleSheet, Text, View} from "react-native";
+import {CameraView, useCameraPermissions} from "expo-camera";
+import {useNavigation} from "@react-navigation/native";
+import FontAwesome6 from "@react-native-vector-icons/fontawesome6";
+
+
+const {width} = Dimensions.get("window");
+const boxSize = width * 0.7;
+const frameWidth = 7;
+const borderRadius = 20;
+
 
 export default function QRScanner() {
-    const [facing, setFacing] = useState<CameraType>('back');
     const [hasPermission, requestPermission] = useCameraPermissions();
-    const [scanned, setScanned] = useState(true);
+    const [scanned, setScanned] = useState(false);
     const [qrData, setQrData] = useState<string | null>(null);
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        if (scanned) {
+            navigation.goBack();
+        }
+    }, [scanned])
+
 
     if (!hasPermission) {
-        return <View />;
+        return <View/>;
     }
 
     if (!hasPermission.granted) {
         return (
             <View style={styles.container}>
-                <Text style={styles.message}>Necesitamos permiso para usar la cámara</Text>
-                <Button onPress={requestPermission} title="Dar permiso" />
+                <Text style={styles.message}>Needed permission</Text>
+                <Button onPress={requestPermission} title="Give permission"/>
             </View>
         );
     }
 
-    function toggleCameraFacing() {
-        setFacing((current) => (current === 'back' ? 'front' : 'back'));
-    }
-
-    function handleBarcodeScanned({ data }: { data: string }) {
+    function handleBarcodeScanned({data}: { data: string }) {
         if (!scanned) {
+            alert(`Data scanned: ${data}`);
             setScanned(true);
             setQrData(data);
-            alert(`Data scanned: ${data}`);
         }
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {!scanned ? (
                 <CameraView
                     style={styles.camera}
-                    facing={facing}
-                    barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+                    barcodeScannerSettings={{barcodeTypes: ["qr"]}}
                     onBarcodeScanned={handleBarcodeScanned}
                 >
-                    <TouchableOpacity
-                        style={styles.closeButton}
-                        onPress={() => setScanned(!scanned)}
-                    >
-                        <Text style={styles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
+                    <FontAwesome6 name="x" iconStyle="solid" size={25} color={"#fff"} style={styles.closeButton}
+                                  onPress={() => setScanned(!scanned)}/>
+                    <View style={styles.frame}>
+                        <View style={styles.cornerTopLeft}/>
+                        <View style={styles.cornerTopRight}/>
+                        <View style={styles.cornerBottomLeft}/>
+                        <View style={styles.cornerBottomRight}/>
+                    </View>
                 </CameraView>
             ) : (
-                <View style={styles.resultContainer}>
-                    {qrData &&
-                        <View>
-                            <Text style={styles.resultText}>Data:</Text>
-                            <Text style={styles.qrData}>{qrData}</Text>
-                        </View>
-                    }
-
-                    <Icon name="camera" size={30} color={"#638eec"} onPress={() => setScanned(false)}></Icon>
-                </View>
+                <></>
             )}
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center' },
-    message: { textAlign: 'center', paddingBottom: 10 },
-    camera: { flex: 1 },
+    container: {flex: 1, justifyContent: "center"},
+    message: {textAlign: "center", paddingBottom: 10},
+    camera: {flex: 1},
     buttonContainer: {
         flex: 1,
-        flexDirection: 'row',
-        backgroundColor: 'transparent',
+        flexDirection: "row",
+        backgroundColor: "transparent",
         margin: 64,
     },
-    button: { flex: 1, alignSelf: 'flex-end', alignItems: 'center' },
-    text: { fontSize: 24, fontWeight: 'bold', color: 'white' },
+    button: {flex: 1, alignSelf: "flex-end", alignItems: "center"},
+    text: {fontSize: 24, fontWeight: "bold", color: "white"},
     resultContainer: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
     },
-    resultText: { fontSize: 20, marginBottom: 10 },
-    qrData: { fontSize: 16, color: 'gray' },
+    resultText: {fontSize: 20, marginBottom: 10},
+    qrData: {fontSize: 16, color: "gray"},
     closeButton: {
-        position: 'absolute',
+        position: "absolute",
         top: 40,
         right: 20,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        borderRadius: 20,
         padding: 10,
-        zIndex: 10,
     },
     closeButtonText: {
-        color: 'white',
+        color: "white",
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: "bold",
+    },
+    frame: {
+        position: "absolute",
+        top: "30%",
+        left: "15%",
+        width: boxSize,
+        height: boxSize,
+        borderColor: "#fff",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    cornerTopLeft: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: 30,
+        height: 30,
+        borderTopWidth: frameWidth,
+        borderLeftWidth: frameWidth,
+        borderTopLeftRadius: borderRadius,
+        borderColor: "white",
+    },
+    cornerTopRight: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        width: 30,
+        height: 30,
+        borderTopWidth: frameWidth,
+        borderRightWidth: frameWidth,
+        borderColor: "white",
+        borderTopRightRadius: borderRadius
+    },
+    cornerBottomLeft: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        width: 30,
+        height: 30,
+        borderBottomWidth: frameWidth,
+        borderLeftWidth: frameWidth,
+        borderColor: "white",
+        borderBottomLeftRadius: borderRadius,
+    },
+    cornerBottomRight: {
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        width: 30,
+        height: 30,
+        borderBottomWidth: frameWidth,
+        borderRightWidth: frameWidth,
+        borderBottomRightRadius: borderRadius,
+        borderColor: "white",
     },
 });

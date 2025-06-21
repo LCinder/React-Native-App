@@ -1,56 +1,35 @@
-import React, {useState} from 'react';
-import {Button, FlatList, Modal, Text, View} from 'react-native';
+import React from "react";
+import {FlatList, StyleSheet, View} from "react-native";
 
-import BasicElement from "@/app/BasicElement";
+import Card from "./Card";
+import {RouteProp, useRoute} from "@react-navigation/core";
+import {useNavigation} from "@react-navigation/native";
+import {RootStackParamList} from "./HomeScreen";
 
-export default function ContainerList({data}) {
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+export default function ContainerList() {
+    const route = useRoute<RouteProp<RootStackParamList["ContainerList"], "ContainerList">>();
+    const navigation = useNavigation();
+    const {data} = route.params;
 
     const handlePress = (item) => {
-        setSelectedItem(item);
-        setModalVisible(true);
+        navigation.navigate("item", {item: item})
     };
 
     return (
-        <View style={{flex: 1}}>
+        <View style={styles.resultContainer}>
             <FlatList
                 data={data}
                 keyExtractor={(item) => item.id}
-                numColumns={3}
-                renderItem={({item}) => <BasicElement item={item} onPress={handlePress}/>}
+                numColumns={2}
+                renderItem={({item}) => <Card item={item} onPress={handlePress}/>}
             />
-
-            <Modal
-                visible={modalVisible}
-                transparent
-                animationType={"fade"}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                    }}
-                >
-                    <View
-                        style={{
-                            backgroundColor: 'white',
-                            padding: 20,
-                            borderRadius: 10,
-                            minWidth: '70%',
-                        }}
-                    >
-                        <Text style={{marginBottom: 20}}>
-                            {selectedItem ? selectedItem.name : ''}
-                        </Text>
-                        <Button title="Close" onPress={() => setModalVisible(false)}/>
-                    </View>
-                </View>
-            </Modal>
         </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+    resultContainer: {
+        paddingTop: 50,
+    },
+});
