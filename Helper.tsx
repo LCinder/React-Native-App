@@ -4,7 +4,7 @@ const colors = ["#8ac926", "#1982c4", "#ff595e", "#ffca3a",]
 
 export function findColorByItem(item) {
     if(!item.registered) {
-        return "rgba(0, 0, 0, 0.5)";
+        return "rgb(147,147,147)";
     }
     switch(item.type) {
         case "grass":
@@ -36,7 +36,7 @@ export function retrieveRealItemState(item) {
 }
 
 export async function fetchData() {
-    return fetch("https://pokeapi.co/api/v2/pokemon?limit=30")
+    return fetch("https://pokeapi.co/api/v2/pokemon?limit=100")
         .then(res => res.json())
         .then(async json => {
             const results = json.results;
