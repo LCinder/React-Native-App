@@ -4,6 +4,7 @@
     "slug": "Draft",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
     "scheme": "draft",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,7 +13,10 @@
     },
     "android": {
       "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
       },
+      "edgeToEdgeEnabled": true,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
@@ -21,11 +25,13 @@
     },
     "web": {
       "bundler": "metro",
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       [
         "expo-splash-screen",
         {
+          "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
