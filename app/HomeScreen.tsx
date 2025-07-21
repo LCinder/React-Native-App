@@ -54,6 +54,9 @@ export default function HomeScreen() {
 
             <FontAwesome6 name="table-list" iconStyle="solid" size={50} color={"#638eec"}
                           onPress={() => navigation.navigate("table", {data: data})}/>
+
+            <FontAwesome6 name="camera" iconStyle="solid" size={50} color={"#638eec"}
+                          onPress={() => navigation.navigate("camerarecognition")}/>
         </View>
     );
 }

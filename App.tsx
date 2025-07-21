@@ -6,6 +6,7 @@ import ContainerList from "./app/ContainerList";
 import HomeScreen from "./app/HomeScreen";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Item from "./app/Item";
+import CameraRecognition from "@/app/CameraRecognition";
 
 const Stack = createNativeStackNavigator();
 const options = {headerShown: false, animation: 'fade'};
@@ -19,6 +20,7 @@ export default function App() {
                 <Stack.Screen name="qrscanner" options={options} component={QRScanner}/>
                 <Stack.Screen name="table" options={options} component={ContainerList}/>
                 <Stack.Screen name="item" options={options} component={Item}/>
+                <Stack.Screen name="camerarecognition" options={options} component={CameraRecognition}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
