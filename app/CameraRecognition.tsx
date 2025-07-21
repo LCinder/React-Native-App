@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import {Button, StyleSheet, Text, View, Image, ActivityIndicator} from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { HUGGINGFACE_TOKEN } from '@env';
 
-const HUGGINGFACE_TOKEN = process.env.TOKEN
 
 export default function CameraRecognition() {
     const [hasPermission, requestPermission] = useCameraPermissions();
