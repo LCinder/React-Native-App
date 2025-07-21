@@ -12,7 +12,7 @@ import {
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { HUGGINGFACE_TOKEN } from '@env';
 
-export default function CameraRecognition() {
+export default function CameraRecognition({ route, navigation }) {
     const [hasPermission, requestPermission] = useCameraPermissions();
     const [isCamera, setIsCamera] = useState(false);
     const [photoUri, setPhotoUri] = useState(null);
@@ -58,6 +58,10 @@ export default function CameraRecognition() {
 
             const json = await res.json();
             setLabels(json);
+            if (route.params?.onReturn) {
+                route.params.onReturn(json);
+            }
+            navigation.goBack();
         } catch (e) {
             console.error("Error analyzing image:", e);
             setError("Failed to analyze image. Please try again.");
