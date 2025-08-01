@@ -1,130 +1,119 @@
-import React, {useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import * as LocationExpo from 'expo-location';
-import MapView, {Marker} from "react-native-maps";
-import {getDistance} from 'geolib';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import MapView, { Marker, UrlTile } from "react-native-maps";
+import { getDistance } from 'geolib';
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function Location() {
-    const [location, setLocation] = useState({});
+    const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
-    const [targetHitted, setTargetHitted] = useState(false);
+    const [targetHit, setTargetHit] = useState(false);
     const [isInsideRadius, setIsInsideRadius] = useState(false);
     const navigation = useNavigation();
+    const route = useRoute();
 
-    const target = { lat: 37.109673, lon: -3.590427 }
+    const target = { latitude: 37.109673, longitude: -3.590427 };
 
     useEffect(() => {
-        loadLocationPermission();
-        getCurrentLocationAndCheckDistance();
+        (async () => {
+            const { status } = await LocationExpo.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Location permission denied');
+                return;
+            }
+            await updateLocation();
+        })();
     }, []);
 
-    const route = useRoute();
     useEffect(() => {
-        if (route.params?.labels) {
-            const detectedLabels = route.params.labels;
+        const detectedLabels = route.params?.labels;
+        if (!detectedLabels || !location?.coords) return;
 
-            if (distance < 20 && detectedLabels.length > 0 && !targetHitted) {
-                alert("You did it!");
-                setTargetHitted(true);
-                navigation.navigate("item", { item: 1 });
-            }
+        const dist = getDistance(location.coords, target);
+        if (dist < 20 && detectedLabels.length > 0 && !targetHit) {
+            alert("You did it!");
+            setTargetHit(true);
+            navigation.navigate("item", { item: 1 });
         }
-    }, [route.params?.labels]);
+    }, [route.params?.labels, location]);
 
-    const loadLocationPermission = async () => {
-        console.log("loading location...")
-        let {status} = await LocationExpo.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-            setErrorMsg("Location denied");
-            return;
-        }
-    }
-
-    const takePhoto = async () => {
-        navigation.navigate("camerarecognition", {
-            onReturn: (labels) => {
-                let allLabels = ""
-                if (labels?.length > 0) {
-                    labels.forEach(item => {
-                        allLabels += item.label + " — " + (item.score * 100).toFixed(2) + "%\n"
-                    })
-                    alert("Labels: " + allLabels);
-                    //navigation.navigate("item", { item: 1 });
-                } else {
-                    alert("No labels detected.");
-                }
-            }
-        });
-
-        console.log(result)
-        if (result?.labels && result.labels.length > 0) {
-            alert("You hit the target!")
-            navigation.navigate('item', { item: 1 });
-        } else {
-            alert("Error");
-        }
-        //setTargetHitted(!targetHitted)
-
-        //navigation.navigate("item", {item: 1})
-    }
-
-    const getCurrentLocationAndCheckDistance = async () => {
-        let loc = await LocationExpo.getCurrentPositionAsync({});
-        setLocation(loc);
-
-        if (distance(loc.coords.latitude, loc.coords.longitude, target.lat, target.lon) < 12) {
-            setIsInsideRadius(true)
-        } else {
-            setIsInsideRadius(false)
+    const updateLocation = async () => {
+        try {
+            const loc = await LocationExpo.getCurrentPositionAsync({});
+            setLocation(loc);
+            const withinRadius = getDistance(loc.coords, target) < 15;
+            setIsInsideRadius(withinRadius);
+        } catch (err) {
+            console.error("Error getting location:", err);
+            setErrorMsg("Failed to fetch location");
         }
     };
 
-    const distance = (currentLat, currentLon, targetLat, targetLon) => getDistance(
-        {latitude: currentLat, longitude: currentLon},
-        {latitude: targetLat, longitude: targetLon}
-    );
+    const handleTakePhoto = () => {
+        navigation.navigate("camerarecognition", {
+            onReturn: (labels) => {
+                if (!labels || labels.length === 0) {
+                    alert("No labels detected.");
+                    return;
+                }
 
-    return (
-        <View style={styles.container}>
-            {location?.coords ? (
-                <>
-                    <MapView
-                        style={styles.map}
-                        showsUserLocation={true}
-                        showsMyLocationButton={true}
-                        followsUserLocation={true}
-                        initialRegion={{
-                            latitude: location.coords.latitude,
-                            longitude: location.coords.longitude,
-                            latitudeDelta: 0.01,
-                            longitudeDelta: 0.01,
-                        }}
-                    >
+                const labelText = labels.map(
+                    item => `${item.label} — ${(item.score * 100).toFixed(2)}%`
+                ).join("\n");
 
-                        <Marker
-                            coordinate={{latitude: target.lat, longitude: target.lon}}
-                        />
-                    </MapView>
+                alert("Labels:\n" + labelText);
+                // navigation.navigate("item", { item: 1 });
+            }
+        });
+    };
 
-                    <View style={styles.buttonContainer}>
-                        <Button title="Update Location" onPress={getCurrentLocationAndCheckDistance}/>
-                        {isInsideRadius && <Button title="Take Photo" onPress={takePhoto}/>}
-                        <Text style={styles.coords}>
-                            Lat: {location.coords.latitude}{"\n"}
-                            Lon: {location.coords.longitude}{"\n"}
-                            Distance to Marker: {distance(location.coords.latitude, location.coords.longitude, target.lat, target.lon)}
-                        </Text>
-                    </View>
-                </>
-            ) : (
+    const renderMap = () => {
+        if (!location?.coords) {
+            return (
                 <View style={styles.centered}>
                     <Text>{errorMsg || "Loading location..."}</Text>
                 </View>
-            )}
-        </View>
-    );
+            );
+        }
 
+        const { latitude, longitude } = location.coords;
+        const distanceToTarget = getDistance(location.coords, target);
+
+        return (
+            <>
+                <MapView
+                    style={styles.map}
+                    showsUserLocation
+                    followsUserLocation
+                    initialRegion={{
+                        latitude,
+                        longitude,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
+                    }}
+                >
+                    <UrlTile
+                        urlTemplate="https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=TI32OVxxl9rThTmshOHA"
+                    />
+                    <Marker coordinate={target} />
+                </MapView>
+
+                <View style={styles.buttonContainer}>
+                    <Button title="Update Location" onPress={updateLocation} />
+                    {isInsideRadius && <Button title="Take Photo" onPress={handleTakePhoto} />}
+                    <Text style={styles.coords}>
+                        Lat: {latitude?.toFixed(6)}{"\n"}
+                        Lon: {longitude?.toFixed(6)}{"\n"}
+                        Distance to Marker: {distanceToTarget} m
+                    </Text>
+                </View>
+            </>
+        );
+    };
+
+
+    return <View style={styles.container}>{renderMap()}</View>;
 }
 
 const styles = StyleSheet.create({

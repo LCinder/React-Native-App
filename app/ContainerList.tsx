@@ -10,6 +10,10 @@ export default function ContainerList() {
     const route = useRoute<RouteProp<RootStackParamList["ContainerList"], "ContainerList">>();
     const navigation = useNavigation();
     const {data} = route.params;
+    const {level} = route.params;
+    const {place} = route.params;
+
+    const dataToShow = data.filter(i => i.strange === level.difficulty).filter(i => place.name === i.place)
 
     const handlePress = (item) => {
         navigation.navigate("item", {item: item})
@@ -18,7 +22,7 @@ export default function ContainerList() {
     return (
         <View style={styles.resultContainer}>
             <FlatList
-                data={data}
+                data={dataToShow}
                 keyExtractor={(item) => item.id}
                 numColumns={2}
                 renderItem={({item}) => <Card item={item} onPress={handlePress}/>}
