@@ -29,7 +29,7 @@ export const findColorByLevel = (level) => {
 
 export function findColorByItem(item) {
     if (!item.registered) {
-        return "rgb(147,147,147)";
+        return "rgb(0,0,0)";
     }
 
     switch (item.strange) {
@@ -97,6 +97,7 @@ export const fetchTempData = () => {
                 type: "Monument",
                 place: "Florence",
                 strange: "Medium",
+                missionType: "Aventurero",
                 latitude: "",
                 longitude: "",
                 image_url: "",
@@ -105,10 +106,12 @@ export const fetchTempData = () => {
         let placeIndex = Math.floor(Math.random() * 2)
         let registered = Math.floor(Math.random() * 2)
         let levelsIndex = Math.floor(Math.random() * 3)
+        let missionTypeIndex = Math.floor(Math.random() * 4)
         templateObject.id = `${i}`;
         templateObject.name += i;
         templateObject.place = allActivePlaces[placeIndex].name;
         templateObject.strange = allLevels[levelsIndex].difficulty;
+        templateObject.missionType = fetchMissionType()[missionTypeIndex].name;
         templateObject.latitude = allActivePlaces[placeIndex].latitude;
         templateObject.longitude = allActivePlaces[placeIndex].longitude;
         templateObject.registered = registered === 0;
@@ -117,4 +120,22 @@ export const fetchTempData = () => {
 
     console.log(data[0])
     return data;
+}
+
+export const fetchMissionType = () => {
+
+    return [
+        {
+            name: "visitante",
+        },
+        {
+            name: "explorador",
+        },
+        {
+            name: "coleccionista",
+        },
+        {
+            name: "aventurero",
+        }
+    ]
 }

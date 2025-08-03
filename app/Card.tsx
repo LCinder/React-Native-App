@@ -5,7 +5,7 @@ import {RootStackParamList} from "./HomeScreen";
 
 export default function Card({item: itemParams, onPress}) {
     const color = findColorByItem(itemParams);
-    const [item, setItem] = useState<RootStackParamList["ContainerList"]>(retrieveRealItemState(itemParams));
+    const [item, setItem] = useState(itemParams);//useState<RootStackParamList["ContainerList"]>(retrieveRealItemState(itemParams));
 
     return (
         <Pressable
