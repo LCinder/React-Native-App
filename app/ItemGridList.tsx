@@ -1,9 +1,9 @@
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import Card from "./Card";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "./HomeScreen";
+import {FlatList, StyleSheet, View, Text} from "react-native";
+import {useNavigation} from "@react-navigation/native";
+import type {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import type {RootStackParamList} from "./HomeScreen";
+import Card from "@/app/Card";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -34,6 +34,6 @@ export default function ItemGridList<T extends { name: string }>({
 
 const styles = StyleSheet.create({
     resultContainer: {
-        paddingTop: 50,
+        marginTop: 50
     },
 });

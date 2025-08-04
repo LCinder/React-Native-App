@@ -4,21 +4,38 @@ import ItemGridList from "./ItemGridList";
 import { fetchMissionType } from "@/Helper";
 import { RootStackParamList } from "./HomeScreen";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {MissionType} from "@/types/types";
+import {StyleSheet, View, Text} from "react-native";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "mission-type">;
 
 export default function MissionTypeListScreen() {
-    const [data, setData] = useState([]);
+    const [missionTypes, setMissionTypes] = useState<MissionType[]>([]);
     const navigation = useNavigation<NavigationProp>();
     const { level, place } = useRoute<RouteProp<RootStackParamList, "mission-type">>().params;
 
     useEffect(() => {
-        setData(fetchMissionType());
+        setMissionTypes(fetchMissionType());
     }, []);
 
-    const handlePress = (missionType) => {
+    const handlePress = (missionType: MissionType) => {
         navigation.navigate("items", { level, place, missionType });
     };
 
-    return <ItemGridList data={data} onPress={handlePress} />;
+    return (
+        <View>
+            <Text style={styles.title}>Targets</Text>
+            <ItemGridList data={missionTypes} onPress={handlePress} />
+        </View>
+    );
 }
+
+const styles = StyleSheet.create({
+    title: {
+        fontSize: 30,
+        fontWeight: "700",
+        margin: 30,
+        marginTop: 50,
+        color: "#313131",
+    },
+})

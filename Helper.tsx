@@ -1,17 +1,22 @@
 import {fetch} from "expo/fetch";
+import {Target, Level, MissionType, Place} from "@/types/types";
 
 const colors = ["#AD8A56", "#B4B4B4", "#AF9500", "#000000",]
-export const allActivePlaces = [{name: "Granada", latitude: "37.109673", longitude: "-3.590427"},
-    {name: "Florence", latitude: "43.7800127", longitude: "11.1997685"}]
+export const colorPalette = ["#5d737e","#64b6ac","#c0fdfb","#daffef","#fcfffd"]
 
+export const ITEM_TEMPLATE = {
+    id: 0,
+    name: "???",
+    type: "???",
+    strange: "???",
+    image_url: "???",
+    missionType: "???",
+    clue: "???",
+    place: {},
+    registered: false
+}
 
-export const allLevels = [
-    { difficulty: "Basic", color: "Bronze" },
-    { difficulty: "Medium", color: "Silver" },
-    { difficulty: "Hard", color: "Gold" },
-];
-
-export const findColorByLevel = (level) => {
+export const findColorByLevel = (level: Level) => {
     switch (level.difficulty) {
         case "Basic":
             return colors[0];
@@ -27,18 +32,17 @@ export const findColorByLevel = (level) => {
     }
 }
 
-export function findColorByItem(item) {
-    if (!item.registered) {
-        return "rgb(0,0,0)";
+export function findColorByItem(item: Target | MissionType) {
+    if (!item?.registered) {
+        return "#000";
     }
 
-    switch (item.strange) {
+    switch (item?.strange) {
         case "Basic":
             return colors[0];
             break
         case "Medium":
             return colors[1];
-            break
         case "Hard":
             return colors[2];
             break
@@ -47,7 +51,7 @@ export function findColorByItem(item) {
     }
 }
 
-export function retrieveRealItemState(item) {
+export function retrieveRealItemState(item: Target) {
     if (item.registered) {
         return item;
     }
@@ -67,7 +71,7 @@ export async function fetchData() {
         .then(async json => {
             const results = json.results;
 
-            const promises = results.map(async (p, index) => {
+            const promises = results.map(async (p: { url: string; }, index: any) => {
                 const res = await fetch(p.url);
                 const json = await res.json();
 
@@ -87,55 +91,103 @@ export async function fetchData() {
 }
 
 
-export const fetchTempData = () => {
+export const fetchTempData = (): Target[] => {
     let data: any[] = [];
+    const allActivePlaces: Place[] = fetchAllActivePlaces()
+    const allLevels: Level[] = fetchAllLevels()
     for (let i = 0; i < 30; i++) {
-        let templateObject =
+        let templateObject: Target =
             {
-                id: "1",
+                id: 1,
                 name: "Monument ",
                 type: "Monument",
-                place: "Florence",
                 strange: "Medium",
+                place: {
+                    coords: {
+                        latitude: 0,
+                        longitude: 0
+                    },
+                    name: "",
+                    id: 0
+                },
                 missionType: "Aventurero",
-                latitude: "",
-                longitude: "",
-                image_url: "",
-                registered: false
+                image_url: "https://www.svgrepo.com/show/104228/arc-de-triomphe.svg",
+                registered: false,
+                clue: ""
             }
         let placeIndex = Math.floor(Math.random() * 2)
         let registered = Math.floor(Math.random() * 2)
         let levelsIndex = Math.floor(Math.random() * 3)
         let missionTypeIndex = Math.floor(Math.random() * 4)
-        templateObject.id = `${i}`;
-        templateObject.name += i;
-        templateObject.place = allActivePlaces[placeIndex].name;
+        templateObject.id = i;
+        templateObject.name += `${i}`;
+        templateObject.place.name = allActivePlaces[placeIndex].name;
         templateObject.strange = allLevels[levelsIndex].difficulty;
         templateObject.missionType = fetchMissionType()[missionTypeIndex].name;
-        templateObject.latitude = allActivePlaces[placeIndex].latitude;
-        templateObject.longitude = allActivePlaces[placeIndex].longitude;
+        templateObject.place.coords = allActivePlaces[placeIndex].coords;
         templateObject.registered = registered === 0;
+
         data.push(templateObject)
     }
 
-    console.log(data[0])
     return data;
 }
 
-export const fetchMissionType = () => {
+export const fetchMissionType = (): MissionType[] => {
 
     return [
         {
             name: "visitante",
+            id: 0
         },
         {
             name: "explorador",
+            id: 1
         },
         {
             name: "coleccionista",
+            id: 2
         },
         {
             name: "aventurero",
+            id: 3
         }
     ]
 }
+
+export const fetchAllActivePlaces = (): Place[] => [
+    {
+        name: "Granada",
+        coords: {
+            latitude: 37.109673,
+            longitude: -3.590427
+        },
+        id: 0
+    },
+    {
+        name: "Florence",
+        coords: {
+            latitude: 43.7800127,
+            longitude: 11.1997685
+        },
+        id: 1
+    }
+]
+
+export const fetchAllLevels = (): Level[] => [
+    {
+        difficulty: "Basic", color: "Bronze",
+        id: 0,
+        targets: []
+    },
+    {
+        difficulty: "Medium", color: "Silver",
+        id: 1,
+        targets: []
+    },
+    {
+        difficulty: "Hard", color: "Gold",
+        id: 2,
+        targets: []
+    },
+];

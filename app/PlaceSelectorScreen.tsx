@@ -1,26 +1,36 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { StyleSheet, View, Text } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useNavigation } from "@react-navigation/native";
-import { allActivePlaces } from "@/Helper";
+import { fetchAllActivePlaces } from "@/Helper";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "./HomeScreen";
+import {LabelValue, Place} from "@/types/types";
 
+// @ts-ignore
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "map-all-places">;
 
 export default function PlaceSelectorScreen() {
     const navigation = useNavigation<NavigationProp>();
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<string | null>(null);
+    const [place, setPlace] = useState<string>("");
+    const [allActivePlaces, setAllActivePlaces] = useState<LabelValue[]>([]);
 
-    const items = allActivePlaces.map((place) => ({
-        label: place.name,
-        value: place.name,
-    }));
+    useEffect(() => {
+        const activePlaces = fetchAllActivePlaces();
+
+        const items = activePlaces.map((place: Place) => ({
+            label: place.name,
+            value: place.name,
+        }));
+
+        setAllActivePlaces(items)
+    }, []);
 
     const handleSelectPlace = (selectedValue: string | null) => {
         if (!selectedValue) return;
-        const selectedPlace = allActivePlaces.find((p) => p.name === selectedValue);
+        const selectedPlace = allActivePlaces.find((p: LabelValue) => p.value === selectedValue);
+
         if (selectedPlace) {
             navigation.navigate("place-level", { place: selectedPlace });
         }
@@ -32,9 +42,9 @@ export default function PlaceSelectorScreen() {
             <DropDownPicker
                 open={open}
                 setOpen={setOpen}
-                value={value}
-                setValue={setValue}
-                items={items}
+                value={place}
+                setValue={setPlace}
+                items={allActivePlaces}
                 placeholder="Select a place..."
                 onChangeValue={handleSelectPlace}
                 style={styles.dropdown}

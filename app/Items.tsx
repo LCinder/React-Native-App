@@ -5,11 +5,12 @@ import ItemGridList from "./ItemGridList";
 import { fetchTempData } from "@/Helper";
 import { RootStackParamList } from "./HomeScreen";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {Target} from "@/types/types";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "items">;
 
 export default function Items() {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<Target[]>([]);
     const navigation = useNavigation<NavigationProp>();
     const { missionType, level } = useRoute<RouteProp<RootStackParamList, "items">>().params;
 
@@ -25,13 +26,13 @@ export default function Items() {
             <Text style={styles.title}>{missionType.name}</Text>
             <ItemGridList
                 data={data}
-                onPress={(item) => navigation.navigate("item", { item })}
+                onPress={(item: Target) => navigation.navigate("item", { item })}
             />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    title: { fontSize: 28, fontWeight: "700", marginBottom: 30, color: "#fff", textAlign: "center" },
-    container: { flex: 1, backgroundColor: "#313131", paddingTop: 60 },
+    title: { fontSize: 28, fontWeight: "700", marginBottom: 30, color: "#313131", textAlign: "center" },
+    container: { flex: 1, paddingTop: 60 },
 });

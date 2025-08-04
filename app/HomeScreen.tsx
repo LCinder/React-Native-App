@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, {useEffect, useState} from "react";
+import {StyleSheet, View} from "react-native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useNavigation} from "@react-navigation/native";
 import FontAwesome6 from "@react-native-vector-icons/fontawesome6";
 import {fetchData} from "../Helper";
+import {Target, LabelValue, Level, MissionType } from "@/types/types";
 
 export type RootStackParamList = {
     "map-all": undefined;
-    "place-level": { place: Place };
-    "mission-type": { place: Place; level: Level };
-    "items": { place: Place; level: Level; missionType: MissionType };
-    "item": { item: Item };
+    "place-level": { place: LabelValue };
+    "mission-type": { place: LabelValue; level: Level };
+    "items": { place: LabelValue; level: Level; missionType: MissionType };
+    "item": { item: Target };
 };
-
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 

@@ -1,26 +1,33 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { allLevels, findColorByLevel } from "@/Helper";
-import { RootStackParamList } from "./HomeScreen";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, {useEffect, useState} from "react";
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {RouteProp, useNavigation, useRoute} from "@react-navigation/native";
+import {fetchAllLevels, findColorByLevel} from "@/Helper";
+import {RootStackParamList} from "./HomeScreen";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {Level} from "@/types/types";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "place-level">;
 
 export default function PlaceDifficultyScreen() {
     const navigation = useNavigation<NavigationProp>();
     const { place } = useRoute<RouteProp<RootStackParamList, "place-level">>().params;
+    const [allLevels, setAllLevels] = useState<Level[]>([])
 
-    const handlePress = (level) => {
+    useEffect(() => {
+        const levels = fetchAllLevels()
+        setAllLevels(levels)
+    }, []);
+
+    const handlePress = (level: Level) => {
         navigation.navigate("mission-type", { level, place });
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{place.name}</Text>
+            <Text style={styles.title}>{place.value}</Text>
             <FlatList
                 data={allLevels}
-                keyExtractor={(item) => item.difficulty}
+                keyExtractor={(item: Level) => item.difficulty}
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         style={[styles.levelCard, { backgroundColor: findColorByLevel(item) }]}
@@ -38,8 +45,8 @@ export default function PlaceDifficultyScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#313131", paddingHorizontal: 20, paddingTop: 60 },
-    title: { fontSize: 28, fontWeight: "700", marginBottom: 30, color: "#ffffff", textAlign: "center" },
+    container: { flex: 1, paddingHorizontal: 20, paddingTop: 60 },
+    title: { fontSize: 28, fontWeight: "700", marginBottom: 30, color: "#313131", textAlign: "center" },
     levelsContainer: { gap: 50, paddingBottom: 50 },
     levelCard: {
         padding: 50,
