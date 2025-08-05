@@ -1,19 +1,24 @@
 import React from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
-import {colorPalette, findColorByItem} from "../Helper";
+import {colorPalette} from "@/utils/Helper";
 import {RemoteSVG} from "@/app/RemoteSVG";
-import {MissionType} from "@/types/types";
+import {MissionType, Target} from "@/types/types";
 
-export function CardMissionType({item, onPress}: { item: MissionType; onPress: (item: MissionType) => void }) {
+type CardMissionTypeProps = {
+    item: MissionType;
+    onPress: (item: MissionType) => void;
+};
+
+export function CardMissionType({item, onPress}: Readonly<CardMissionTypeProps>) {
     return (
         <Pressable style={[styles.container]} onPress={() => onPress(item)}>
             <View style={styles.header}>
                 <Text style={styles.title}>{item.name}</Text>
             </View>
 
-            <View style={styles.imageContainer}>
+            {/*<View style={styles.imageContainer}>
                 <RemoteSVG uri={item.image_url} color={colorPalette[3]} />
-            </View>
+            </View>*/}
         </Pressable>
     );
 }

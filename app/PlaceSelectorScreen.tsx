@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { StyleSheet, View, Text } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useNavigation } from "@react-navigation/native";
-import { fetchAllActivePlaces } from "@/Helper";
+import { fetchAllActivePlaces } from "@/utils/Helper";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "./HomeScreen";
 import {LabelValue, Place} from "@/types/types";

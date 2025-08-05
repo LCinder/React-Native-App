@@ -2,9 +2,8 @@ import React from "react";
 import {useEffect, useState} from "react";
 import {SvgXml} from "react-native-svg";
 
-// @ts-ignore
 export const RemoteSVG = ({ uri, width = 100, height = 100, color = "#FFF" }) => {
-    const [svgContent, setSvgContent] = useState(null);
+    const [svgContent, setSvgContent] = useState<string>("");
 
     useEffect(() => {
         fetch(uri)

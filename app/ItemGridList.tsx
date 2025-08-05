@@ -1,22 +1,17 @@
 import React from "react";
-import {FlatList, StyleSheet, View, Text} from "react-native";
-import {useNavigation} from "@react-navigation/native";
-import type {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import type {RootStackParamList} from "./HomeScreen";
+import {FlatList, StyleSheet, View} from "react-native";
 import Card from "@/app/Card";
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+import {MissionType, Target} from "@/types/types";
 
 type ContainerListProps<T> = {
     data: T[];
-    onPress: (item: T) => void;
+    onPress: (item: T) => void
 };
 
-export default function ItemGridList<T extends { name: string }>({
+export default function ItemGridList<T extends Target | MissionType>({
     data,
     onPress,
-}: ContainerListProps<T>) {
-    const navigation = useNavigation<NavigationProp>();
+}: Readonly<ContainerListProps<T>>) {
 
     return (
         <View style={styles.resultContainer}>

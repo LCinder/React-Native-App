@@ -1,33 +1,42 @@
-import React, {useEffect, useState} from "react";
-import {Pressable, StyleSheet, Text, View} from "react-native";
-import {colorPalette, findColorByItem, ITEM_TEMPLATE} from "../Helper";
-import {RemoteSVG} from "@/app/RemoteSVG";
-import {Target} from "@/types/types";
+import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { colorPalette, findColorByItem, ITEM_TEMPLATE } from "@/utils/Helper";
+import { RemoteSVG } from "@/app/RemoteSVG";
+import { Target } from "@/types/types";
 
-export function CardTarget({item: originalItem, onPress}: { item: Target; onPress: (item: Target) => void }) {
-    const [item, setItem] = useState<Target>(() => {
-        if (!originalItem.registered) {
-            const clone = {...ITEM_TEMPLATE, image_url: originalItem.image_url};
-            return clone;
-        }
-        return originalItem;
-    });
+type CardTargetProps = {
+    item: Target;
+    onPress: (item: Target) => void;
+};
 
-    const color = findColorByItem(item);
+export function CardTarget({ item: originalItem, onPress }: Readonly<CardTargetProps>) {
+    const itemToRender: Target = originalItem.registered
+        ? originalItem
+        : { ...ITEM_TEMPLATE, image_url: originalItem.image_url };
+
+    const color = findColorByItem(itemToRender);
 
     return (
-        <Pressable style={[styles.container, {backgroundColor: color}]} onPress={() => onPress(item)}>
+        <Pressable
+            style={[styles.container, { backgroundColor: color }]}
+            onPress={() => onPress(itemToRender)}
+        >
             <View style={styles.header}>
-                <Text style={styles.title}>{item.name}</Text>
+                <Text style={styles.title}>{itemToRender.name}</Text>
             </View>
 
             <View style={styles.imageContainer}>
-                <RemoteSVG uri={item.image_url} color={item.registered ? colorPalette[3] : colorPalette[0]} />
+                <RemoteSVG
+                    uri={itemToRender.image_url}
+                    color={
+                        itemToRender.registered ? colorPalette[3] : colorPalette[0]
+                    }
+                />
             </View>
 
             <View style={styles.textContainer}>
-                <Text style={styles.text}>{item.type}</Text>
-                <Text style={styles.text}>{item.strange}</Text>
+                <Text style={styles.text}>{itemToRender.type}</Text>
+                <Text style={styles.text}>{itemToRender.strange}</Text>
             </View>
         </Pressable>
     );

@@ -4,16 +4,17 @@ import Location from "./app/Location";
 import QRScanner from "./app/QRScanner";
 import ItemGridList from "./app/ItemGridList";
 import HomeScreen from "./app/HomeScreen";
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {createNativeStackNavigator, NativeStackNavigationOptions} from "@react-navigation/native-stack";
 import Item from "./app/Item";
 import CameraRecognition from "@/app/CameraRecognition";
 import PlaceSelectorScreen from "@/app/PlaceSelectorScreen";
 import PlaceDifficultyScreen from "@/app/PlaceDifficultyScreen";
 import MissionTypeListScreen from './app/MissionTypeListScreen';
 import Items from './app/Items';
+import React from 'react';
 
 const Stack = createNativeStackNavigator();
-const options = {headerShown: false, animation: 'fade'};
+const options: NativeStackNavigationOptions = { headerShown: false, animation: "fade" };
 
 export default function App() {
     return (

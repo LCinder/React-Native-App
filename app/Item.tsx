@@ -1,7 +1,7 @@
 import React, {useRef} from "react";
 import {Animated, Dimensions, StatusBar, StyleSheet, Text, View,} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {findColorByItem} from "../Helper";
+import {findColorByItem} from "../utils/Helper";
 
 const {width} = Dimensions.get("window");
 const HEADER_MAX_HEIGHT = 450;

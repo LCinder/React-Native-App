@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import ItemGridList from "./ItemGridList";
-import { fetchTempData } from "@/Helper";
+import { fetchTempData } from "@/utils/Helper";
 import { RootStackParamList } from "./HomeScreen";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {Target} from "@/types/types";
@@ -15,7 +15,8 @@ export default function Items() {
     const { missionType, level } = useRoute<RouteProp<RootStackParamList, "items">>().params;
 
     useEffect(() => {
-        const result = fetchTempData()
+        const result =
+            fetchTempData()
             .filter((i) => i.missionType === missionType.name)
             .filter((i) => i.strange === level.difficulty);
         setData(result);

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {RouteProp, useNavigation, useRoute} from "@react-navigation/native";
-import {fetchAllLevels, findColorByLevel} from "@/Helper";
+import {fetchAllLevels, findColorByLevel} from "@/utils/Helper";
 import {RootStackParamList} from "./HomeScreen";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {Level} from "@/types/types";

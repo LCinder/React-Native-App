@@ -3,7 +3,7 @@ import {StyleSheet, View} from "react-native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useNavigation} from "@react-navigation/native";
 import FontAwesome6 from "@react-native-vector-icons/fontawesome6";
-import {fetchData} from "../Helper";
+import {fetchData} from "@/utils/Helper";
 import {Target, LabelValue, Level, MissionType } from "@/types/types";
 
 export type RootStackParamList = {

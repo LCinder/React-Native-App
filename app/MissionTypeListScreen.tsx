@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import ItemGridList from "./ItemGridList";
-import { fetchMissionType } from "@/Helper";
+import { fetchMissionType } from "@/utils/Helper";
 import { RootStackParamList } from "./HomeScreen";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {MissionType} from "@/types/types";
