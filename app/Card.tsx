@@ -9,7 +9,7 @@ type CardProps =
 
 export default function Card({ item, onPress }: Readonly<CardProps>) {
     if (isTarget(item)) {
-        return <CardTarget item={item} onPress={onPress as (item: Target) => void} />;
+        return <CardTarget item={item} onPress={onPress} />;
     } else {
         return <CardMissionType item={item} onPress={onPress as (item: MissionType) => void} />;
     }

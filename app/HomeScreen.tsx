@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {StyleSheet, View} from "react-native";
+import React, {useContext, useEffect, useState} from "react";
+import {StyleSheet, View, Text} from "react-native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useNavigation} from "@react-navigation/native";
 import FontAwesome6 from "@react-native-vector-icons/fontawesome6";
 import {fetchData} from "@/utils/Helper";
 import {Target, LabelValue, Level, MissionType } from "@/types/types";
+import {SelectedItemContext} from "@/app/SelectedItemProvider";
 
 export type RootStackParamList = {
     "map-all": undefined;
@@ -19,6 +20,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 export default function HomeScreen() {
     const navigation = useNavigation<NavigationProp>();
     const [data, setData] = useState([]);
+    const { selectedItemName } = useContext(SelectedItemContext);
 
     useEffect(() => {
         fetchData()
@@ -27,15 +29,11 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            <FontAwesome6 name="location-dot" iconStyle="solid" size={50} color={"#638eec"}
-                          onPress={() => navigation.navigate("location")}/>
-
-            <FontAwesome6 name="camera" iconStyle="solid" size={50} color={"#638eec"}
-                          onPress={() => navigation.navigate("camerarecognition")}/>
-
-            <FontAwesome6 name="table-list" iconStyle="solid" size={50} color={"#638eec"}
-                onPress={() => navigation.navigate("map-all-places")} />
-
+            {selectedItemName && (
+                <Text style={{ marginTop: 30, fontSize: 18, fontWeight: "bold" }}>
+                    Item Selected: {selectedItemName.name}
+                </Text>
+            )}
         </View>
     );
 }
