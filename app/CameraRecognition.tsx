@@ -112,9 +112,9 @@ export default function CameraRecognition({ route, navigation }) {
                             {error && <Text style={styles.error}>{error}</Text>}
                             <View style={styles.resultContainer}>
                                 {labels.length > 0 ? (
-                                    labels.map((item, i) => (
+                                    labels.map((target, i) => (
                                         <Text key={i}>
-                                            {item.label} — {(item.score * 100).toFixed(2)}%
+                                            {target.label} — {(target.score * 100).toFixed(2)}%
                                         </Text>
                                     ))
                                 ) : (

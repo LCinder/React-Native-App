@@ -34,7 +34,7 @@ export default function Location() {
         if (dist < 20 && detectedLabels.length > 0 && !targetHit) {
             alert("You did it!");
             setTargetHit(true);
-            navigation.navigate("item", { item: 1 });
+            navigation.navigate("target", { target: 1 });
         }
     }, [route.params?.labels, location]);
 
@@ -59,11 +59,11 @@ export default function Location() {
                 }
 
                 const labelText = labels.map(
-                    item => `${item.label} — ${(item.score * 100).toFixed(2)}%`
+                    target => `${target.label} — ${(target.score * 100).toFixed(2)}%`
                 ).join("\n");
 
                 alert("Labels:\n" + labelText);
-                // navigation.navigate("item", { item: 1 });
+                // navigation.navigate("target", { target: 1 });
             }
         });
     };

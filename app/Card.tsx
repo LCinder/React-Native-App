@@ -4,17 +4,17 @@ import { CardMissionType } from "@/app/CardMissionType";
 import { CardTarget } from "@/app/CardTarget";
 
 type CardProps =
-    | { item: Target; onPress: (item: Target) => void }
-    | { item: MissionType; onPress: (item: MissionType) => void };
+    | { target: Target; onPress: (target: Target) => void }
+    | { target: MissionType; onPress: (target: MissionType) => void };
 
-export default function Card({ item, onPress }: Readonly<CardProps>) {
-    if (isTarget(item)) {
-        return <CardTarget item={item} onPress={onPress} />;
+export default function Card({ target, onPress }: Readonly<CardProps>) {
+    if (isTarget(target)) {
+        return <CardTarget target={target} onPress={onPress} />;
     } else {
-        return <CardMissionType item={item} onPress={onPress as (item: MissionType) => void} />;
+        return <CardMissionType target={target} onPress={onPress as (target: MissionType) => void} />;
     }
 }
 
-function isTarget(item: Target | MissionType): item is Target {
-    return "registered" in item;
+function isTarget(target: Target | MissionType) {
+    return "registered" in target;
 }

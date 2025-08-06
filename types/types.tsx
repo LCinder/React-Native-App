@@ -36,9 +36,11 @@ export type LabelValue = {
 }
 
 export type RootStackParamList = {
-    "map-all": undefined;
+    "Home": undefined;
+    "map-all-places": undefined;
+    "main-tabs": { screen : string};
     "place-level": { place: LabelValue };
     "mission-type": { level: Level };
     "items": { level: Level; missionType: MissionType };
-    "item": { item: Target };
+    "target": { target: Target };
 };

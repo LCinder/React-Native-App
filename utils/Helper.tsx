@@ -1,5 +1,5 @@
 import {fetch} from "expo/fetch";
-import {Target, Level, MissionType, Place} from "@/types/types";
+import {Level, MissionType, Place, Target} from "@/types/types";
 
 const colors = ["#AD8A56", "#B4B4B4", "#AF9500", "#000000",]
 export const colorPalette = ["#5d737e","#64b6ac","#c0fdfb","#daffef","#fcfffd"]
@@ -27,48 +27,43 @@ export const findColorByLevel = (level: Level) => {
     switch (level.difficulty) {
         case "Basic":
             return colors[0];
-            break
         case "Medium":
             return colors[1];
-            break
         case "Hard":
             return colors[2];
-            break
         default:
             return colors[3];
     }
 }
 
-export function findColorByItem(item: Target) {
-    if (!item?.registered) {
+export function findColorByItem(target: Target) {
+    if (!target?.registered) {
         return "#000";
     }
 
-    switch (item?.strange) {
+    switch (target?.strange) {
         case "Basic":
             return colors[0];
-            break
         case "Medium":
             return colors[1];
         case "Hard":
             return colors[2];
-            break
         default:
             return colors[3];
     }
 }
 
-export function retrieveRealItemState(item: Target) {
-    if (item.registered) {
-        return item;
+export function retrieveRealItemState(target: Target) {
+    if (target.registered) {
+        return target;
     }
     return {
-        id: item.id,
+        id: target.id,
         name: "???",
         type: "???",
         strange: "???",
-        image_url: item.image_url,
-        registered: item.registered
+        image_url: target.image_url,
+        registered: target.registered
     }
 }
 
@@ -91,9 +86,7 @@ export async function fetchData() {
                     registered: Math.floor(Math.random() * 2) === 1
                 };
             });
-            const allData = await Promise.all(promises);
-
-            return allData;
+            return await Promise.all(promises);
         });
 }
 

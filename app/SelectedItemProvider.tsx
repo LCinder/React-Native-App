@@ -1,5 +1,5 @@
-import React, { createContext, useState, ReactNode } from "react";
-import { Target } from "@/types/types";
+import React, { createContext, useState, ReactNode, useMemo } from "react";
+import {Target} from "@/types/types";
 
 type SelectedItemContextType = {
     selectedItem: Target | null;
@@ -14,8 +14,13 @@ export const SelectedItemContext = createContext<SelectedItemContextType>({
 export const SelectedItemProvider = ({ children }: { children: ReactNode }) => {
     const [selectedItem, setSelectedItem] = useState<Target | null>(null);
 
+    const value = useMemo(
+        () => ({ selectedItem, setSelectedItem }),
+        [selectedItem]
+    );
+
     return (
-        <SelectedItemContext.Provider value={{ selectedItem, setSelectedItem }}>
+        <SelectedItemContext.Provider value={value}>
             {children}
         </SelectedItemContext.Provider>
     );

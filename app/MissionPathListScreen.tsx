@@ -8,7 +8,7 @@ import {StyleSheet, View, Text} from "react-native";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "mission-type">;
 
-export default function MissionTypeListScreen() {
+export default function MissionPathListScreen() {
     const [missionTypes, setMissionTypes] = useState<MissionType[]>([]);
     const navigation = useNavigation<NavigationProp>();
     const { level } = useRoute<RouteProp<RootStackParamList, "mission-type">>().params;

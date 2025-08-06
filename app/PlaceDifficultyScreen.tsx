@@ -1,15 +1,18 @@
-import React, {useEffect, useState} from "react";
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useContext, useEffect, useState} from "react";
+import {Button, FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {fetchAllLevels, findColorByLevel} from "@/utils/Helper";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {Level, RootStackParamList} from "@/types/types";
+import {SelectedLevelContext} from "@/app/SelectedLevelContext";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "place-level">;
 
 export default function PlaceDifficultyScreen() {
     const navigation = useNavigation<NavigationProp>();
     const [allLevels, setAllLevels] = useState<Level[]>([])
+    const {setSelectedLevel } = useContext(SelectedLevelContext);
+
 
     useEffect(() => {
         const levels = fetchAllLevels()
@@ -32,6 +35,8 @@ export default function PlaceDifficultyScreen() {
                     >
                         <Text style={styles.levelText}>{item.difficulty}</Text>
                         <Text style={styles.progressText}>0% completed</Text>
+                        <Button title={"Select"} onPress={() => setSelectedLevel(item)}></Button>
+
                     </TouchableOpacity>
                 )}
                 contentContainerStyle={styles.levelsContainer}

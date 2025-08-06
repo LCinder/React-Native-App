@@ -5,7 +5,7 @@ import {MissionType, Target} from "@/types/types";
 
 type ContainerListProps<T> = {
     data: T[];
-    onPress: (item: T) => void
+    onPress: (target: T) => void
 };
 
 export default function ItemGridList<T extends Target | MissionType>({
@@ -17,9 +17,9 @@ export default function ItemGridList<T extends Target | MissionType>({
         <View style={styles.resultContainer}>
             <FlatList
                 data={data}
-                keyExtractor={(item) => item.name}
+                keyExtractor={(target) => target.name}
                 numColumns={2}
-                renderItem={({ item }) => <Card item={item} onPress={() => onPress(item)} />}
+                renderItem={({ item }) => <Card target={item} onPress={() => onPress(item)} />}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 100 }}
             />

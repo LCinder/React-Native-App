@@ -5,11 +5,11 @@ import QRScanner from "./app/QRScanner";
 import ItemGridList from "./app/ItemGridList";
 import HomeScreen from "./app/HomeScreen";
 import {createNativeStackNavigator, NativeStackNavigationOptions} from "@react-navigation/native-stack";
-import Item from "./app/Item";
+import Target from "./app/Target";
 import CameraRecognition from "@/app/CameraRecognition";
 import PlaceSelectorScreen from "@/app/PlaceSelectorScreen";
 import PlaceDifficultyScreen from "@/app/PlaceDifficultyScreen";
-import MissionTypeListScreen from './app/MissionTypeListScreen';
+import MissionPathListScreen from './app/MissionPathListScreen';
 import Items from './app/Items';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -17,6 +17,7 @@ import Profile from "@/app/Profile";
 import {Ionicons} from "@expo/vector-icons";
 import {SelectedItemProvider} from "@/app/SelectedItemProvider";
 import {TargetsProvider} from "@/app/TargetsContext";
+import {SelectedLevelProvider} from "@/app/SelectedLevelContext";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -47,24 +48,23 @@ function MainTabs() {
 export default function App() {
     return (
         <TargetsProvider>
-            <SelectedItemProvider>
-                <NavigationContainer>
-                    <Stack.Navigator initialRouteName="main-tabs">
-                        <Stack.Screen name="main-tabs" options={options} component={MainTabs} />
-                        <Stack.Screen name="home" options={options} component={HomeScreen}/>
-                        <Stack.Screen name="location" options={options} component={Location}/>
-                        <Stack.Screen name="qrscanner" options={options} component={QRScanner}/>
-                        <Stack.Screen name="table" options={options} component={ItemGridList}/>
-                        <Stack.Screen name="map-all-places" options={options} component={PlaceSelectorScreen}/>
-                        <Stack.Screen name="place-level" options={options} component={PlaceDifficultyScreen}/>
-                        <Stack.Screen name="item" options={options} component={Item} />
-                        <Stack.Screen name="camerarecognition" options={options} component={CameraRecognition} />
-                        <Stack.Screen name="items" options={options} component={Items} />
-                        <Stack.Screen name="mission-type" options={options} component={MissionTypeListScreen} />
-                        <Stack.Screen name="profile" options={options} component={Profile} />
-                    </Stack.Navigator>
-                </NavigationContainer>
-            </SelectedItemProvider>
+            <SelectedLevelProvider>
+                <SelectedItemProvider>
+                    <NavigationContainer>
+                        <Stack.Navigator>
+                            <Stack.Screen name="main-tabs" options={options} component={MainTabs} />
+                            <Stack.Screen name="location" options={options} component={Location}/>
+                            <Stack.Screen name="qrscanner" options={options} component={QRScanner}/>
+                            <Stack.Screen name="table" options={options} component={ItemGridList}/>
+                            <Stack.Screen name="map-all-places" options={options} component={PlaceSelectorScreen}/>
+                            <Stack.Screen name="target" options={options} component={Target} />
+                            <Stack.Screen name="camerarecognition" options={options} component={CameraRecognition} />
+                            <Stack.Screen name="items" options={options} component={Items} />
+                            <Stack.Screen name="mission-type" options={options} component={MissionPathListScreen} />
+                        </Stack.Navigator>
+                    </NavigationContainer>
+                </SelectedItemProvider>
+            </SelectedLevelProvider>
         </TargetsProvider>
     );
 }

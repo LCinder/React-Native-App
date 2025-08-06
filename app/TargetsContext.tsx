@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import React, {createContext, ReactNode, useCallback, useContext, useEffect, useState} from "react";
 import {Target} from "@/types/types";
 import {fetchTempDataTargetsByZone} from "@/utils/Helper";
 import {SelectedItemContext} from "@/app/SelectedItemProvider";
@@ -21,7 +21,6 @@ const TargetsContext = createContext<TargetsContextType>({
 });
 
 export const useTargets = () => useContext(TargetsContext);
-
 export const TargetsProvider = ({children}: { children: ReactNode }) => {
     const [targets, setTargets] = useState<Target[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -29,7 +28,7 @@ export const TargetsProvider = ({children}: { children: ReactNode }) => {
     const [currentZone, setCurrentZone] = useState<string>("");
     const { setSelectedItem } = useContext(SelectedItemContext);
 
-    const loadTargets = (zone: string) => {
+    const loadTargets = useCallback((zone: string) => {
         setLoading(true);
         setError(null);
         setSelectedItem(null);
@@ -38,17 +37,17 @@ export const TargetsProvider = ({children}: { children: ReactNode }) => {
             setTargets(data);
         } catch (err) {
             setError("Error loading Targets");
-            console.log(err)
+            console.log(err);
         } finally {
             setLoading(false);
         }
-    };
+    }, [setSelectedItem]);
 
     useEffect(() => {
         if (currentZone) {
             loadTargets(currentZone);
         }
-    }, [currentZone]);
+    }, [currentZone, loadTargets]);
 
     function apiMarkComplete(id: number) {
 

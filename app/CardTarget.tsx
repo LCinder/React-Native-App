@@ -5,11 +5,11 @@ import { RemoteSVG } from "@/app/RemoteSVG";
 import { Target } from "@/types/types";
 
 type CardTargetProps = {
-    item: Target;
-    onPress: (item: Target) => void;
+    target: Target;
+    onPress: (target: Target) => void;
 };
 
-export function CardTarget({ item: originalItem, onPress }: Readonly<CardTargetProps>) {
+export function CardTarget({ target: originalItem, onPress }: Readonly<CardTargetProps>) {
     const itemToRender: Target = originalItem.registered
         ? originalItem
         : { ...ITEM_TEMPLATE, image_url: originalItem.image_url };
