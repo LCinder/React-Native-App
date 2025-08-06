@@ -102,7 +102,7 @@ export const fetchTempData = (): Target[] => {
     let data: any[] = [];
     const allActivePlaces: Place[] = fetchAllActivePlaces()
     const allLevels: Level[] = fetchAllLevels()
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 10; i++) {
         let templateObject: Target =
             {
                 id: 1,
@@ -138,6 +138,13 @@ export const fetchTempData = (): Target[] => {
     }
 
     return data;
+}
+
+
+export const fetchTempDataTargetsByZone = (zone: string): Target[] => {
+    const targets: Target[] = fetchTempData()
+
+    return targets.filter(t => t.place.name === zone)
 }
 
 export const fetchMissionType = (): MissionType[] => {

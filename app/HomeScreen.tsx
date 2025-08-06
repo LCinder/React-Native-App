@@ -1,39 +1,45 @@
-import React, {useContext, useEffect, useState} from "react";
-import {StyleSheet, View, Text} from "react-native";
+import React, {useContext, useEffect} from "react";
+import {Button, Pressable, StyleSheet, Text, View} from "react-native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useNavigation} from "@react-navigation/native";
-import FontAwesome6 from "@react-native-vector-icons/fontawesome6";
-import {fetchData} from "@/utils/Helper";
-import {Target, LabelValue, Level, MissionType } from "@/types/types";
+import {LabelValue, Level, MissionType, RootStackParamList, Target} from "@/types/types";
 import {SelectedItemContext} from "@/app/SelectedItemProvider";
+import {useTargets} from "@/app/TargetsContext";
 
-export type RootStackParamList = {
-    "map-all": undefined;
-    "place-level": { place: LabelValue };
-    "mission-type": { place: LabelValue; level: Level };
-    "items": { place: LabelValue; level: Level; missionType: MissionType };
-    "item": { item: Target };
-};
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 
 export default function HomeScreen() {
     const navigation = useNavigation<NavigationProp>();
-    const [data, setData] = useState([]);
-    const { selectedItemName } = useContext(SelectedItemContext);
+    const {selectedItem} = useContext(SelectedItemContext);
+    const {targets} = useTargets();
 
     useEffect(() => {
-        fetchData()
-            .then(res => setData(res))
-    }, []);
+        console.log("Loading targets: " + targets.length)
+    }, [targets]);
+
+    const changeZone = () => {
+        navigation.navigate("map-all-places")
+    }
 
     return (
         <View style={styles.container}>
-            {selectedItemName && (
-                <Text style={{ marginTop: 30, fontSize: 18, fontWeight: "bold" }}>
-                    Item Selected: {selectedItemName.name}
-                </Text>
-            )}
+            <View style={styles.changeZoneView}>
+                <Button title={"Change Zone"} onPress={changeZone}/>
+            </View>
+            <View style={styles.container}>
+                {targets.map(t => {
+                    let styleSelectedItem = {}
+                    if (t.id === selectedItem?.id) {
+                        styleSelectedItem = styles.selectedItem
+                    }
+                    return (
+                        <Pressable key={t.id} onPress={() => navigation.navigate("item", {item: t})} style={styles.target}>
+                            <Text style={styleSelectedItem} key={t.id}>{t.name}</Text>
+                        </Pressable>
+                    )
+                })}
+            </View>
         </View>
     );
 }
@@ -46,4 +52,15 @@ const styles = StyleSheet.create({
         gap: 20,
         paddingHorizontal: 20,
     },
+    changeZoneView: {
+        backgroundColor: "#ff3e3e",
+    },
+    selectedItem: {
+        marginTop: 30,
+        fontSize: 25,
+        fontWeight: "bold"
+    },
+    target: {
+        margin: 20,
+    }
 });

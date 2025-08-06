@@ -1,7 +1,7 @@
 import React, {useContext, useRef} from "react";
 import {Animated, Button, Dimensions, StatusBar, StyleSheet, Text, View,} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {findColorByItem} from "../utils/Helper";
+import {findColorByItem} from "@/utils/Helper";
 import {SelectedItemContext} from "@/app/SelectedItemProvider";
 
 const {width} = Dimensions.get("window");
@@ -13,7 +13,7 @@ export default function Item() {
     const route = useRoute();
     const navigation = useNavigation();
     const {item} = route.params;
-    const { setSelectedItemName } = useContext(SelectedItemContext);
+    const { setSelectedItem } = useContext(SelectedItemContext);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -67,7 +67,7 @@ export default function Item() {
                 ]}
             >
                 <Button title={"Select"} onPress={() => {
-                    setSelectedItemName(item)
+                    setSelectedItem(item)
                     navigation.navigate("main-tabs", { screen: "Home" })
                 }}/>
 

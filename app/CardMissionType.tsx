@@ -1,8 +1,7 @@
 import React from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {colorPalette} from "@/utils/Helper";
-import {RemoteSVG} from "@/app/RemoteSVG";
-import {MissionType, Target} from "@/types/types";
+import {MissionType} from "@/types/types";
 
 type CardMissionTypeProps = {
     item: MissionType;

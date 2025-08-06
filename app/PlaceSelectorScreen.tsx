@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from "react";
-import { StyleSheet, View, Text } from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { useNavigation } from "@react-navigation/native";
-import { fetchAllActivePlaces } from "@/utils/Helper";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "./HomeScreen";
-import {LabelValue, Place} from "@/types/types";
+import {useNavigation} from "@react-navigation/native";
+import {fetchAllActivePlaces} from "@/utils/Helper";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {LabelValue, Place, RootStackParamList} from "@/types/types";
+import {useTargets} from "@/app/TargetsContext";
 
-// @ts-ignore
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "map-all-places">;
 
 export default function PlaceSelectorScreen() {
@@ -15,6 +14,7 @@ export default function PlaceSelectorScreen() {
     const [open, setOpen] = useState(false);
     const [place, setPlace] = useState<string>("");
     const [allActivePlaces, setAllActivePlaces] = useState<LabelValue[]>([]);
+    const {setZone} = useTargets();
 
     useEffect(() => {
         const activePlaces = fetchAllActivePlaces();
@@ -32,7 +32,8 @@ export default function PlaceSelectorScreen() {
         const selectedPlace = allActivePlaces.find((p: LabelValue) => p.value === selectedValue);
 
         if (selectedPlace) {
-            navigation.navigate("place-level", { place: selectedPlace });
+            setZone(selectedPlace.value);
+            navigation.goBack();
         }
     };
 
@@ -55,8 +56,8 @@ export default function PlaceSelectorScreen() {
 }
 
 const styles = StyleSheet.create({
-    map: { flex: 1, padding: 20, backgroundColor: "#fff" },
-    label: { fontSize: 16, marginBottom: 10 },
-    dropdown: { borderColor: "#ccc", borderRadius: 10 },
-    dropdownContainer: { borderColor: "#ccc" },
+    map: {flex: 1, padding: 20, backgroundColor: "#fff"},
+    label: {fontSize: 16, marginBottom: 10},
+    dropdown: {borderColor: "#ccc", borderRadius: 10},
+    dropdownContainer: {borderColor: "#ccc"},
 });

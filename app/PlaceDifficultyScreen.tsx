@@ -1,16 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {RouteProp, useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native";
 import {fetchAllLevels, findColorByLevel} from "@/utils/Helper";
-import {RootStackParamList} from "./HomeScreen";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {Level} from "@/types/types";
+import {Level, RootStackParamList} from "@/types/types";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "place-level">;
 
 export default function PlaceDifficultyScreen() {
     const navigation = useNavigation<NavigationProp>();
-    const { place } = useRoute<RouteProp<RootStackParamList, "place-level">>().params;
     const [allLevels, setAllLevels] = useState<Level[]>([])
 
     useEffect(() => {
@@ -19,18 +17,17 @@ export default function PlaceDifficultyScreen() {
     }, []);
 
     const handlePress = (level: Level) => {
-        navigation.navigate("mission-type", { level, place });
+        navigation.navigate("mission-type", {level});
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{place.value}</Text>
             <FlatList
                 data={allLevels}
                 keyExtractor={(item: Level) => item.difficulty}
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                     <TouchableOpacity
-                        style={[styles.levelCard, { backgroundColor: findColorByLevel(item) }]}
+                        style={[styles.levelCard, {backgroundColor: findColorByLevel(item)}]}
                         onPress={() => handlePress(item)}
                     >
                         <Text style={styles.levelText}>{item.difficulty}</Text>
@@ -45,17 +42,17 @@ export default function PlaceDifficultyScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, paddingHorizontal: 20, paddingTop: 60 },
-    title: { fontSize: 28, fontWeight: "700", marginBottom: 30, color: "#313131", textAlign: "center" },
-    levelsContainer: { gap: 50, paddingBottom: 50 },
+    container: {flex: 1, paddingHorizontal: 20, paddingTop: 60},
+    title: {fontSize: 28, fontWeight: "700", marginBottom: 30, color: "#313131", textAlign: "center"},
+    levelsContainer: {gap: 50, paddingBottom: 50},
     levelCard: {
         padding: 50,
         borderRadius: 16,
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.1,
         shadowRadius: 4,
     },
-    levelText: { fontSize: 25, fontWeight: "600", color: "#fff", marginBottom: 8, textAlign: "center" },
-    progressText: { fontSize: 17, color: "#fff", textAlign: "center", opacity: 0.85 },
+    levelText: {fontSize: 25, fontWeight: "600", color: "#fff", marginBottom: 8, textAlign: "center"},
+    progressText: {fontSize: 17, color: "#fff", textAlign: "center", opacity: 0.85},
 });
