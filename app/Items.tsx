@@ -18,7 +18,7 @@ export default function Items() {
         const result =
             targets
                 .filter((i) => i.missionType === missionType.name)
-                .filter((i) => i.strange === level.difficulty);
+                .filter((i) => i.difficulty === level.difficulty);
         setData(result);
     }, [missionType.name, level.difficulty, targets]);
 
@@ -27,7 +27,7 @@ export default function Items() {
             <Text style={styles.title}>{missionType.name}</Text>
             <ItemGridList
                 data={data}
-                onPress={(target: Target) => navigation.navigate("target", {target})}
+                onPress={(target: Target) => navigation.navigate("target", {target: target as Target})}
             />
         </View>
     );

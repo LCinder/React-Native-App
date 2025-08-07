@@ -1,6 +1,6 @@
 import React, {useContext, useRef} from "react";
 import {Animated, Button, Dimensions, StatusBar, StyleSheet, Text, View,} from "react-native";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {CommonActions, useNavigation, useRoute} from "@react-navigation/native";
 import {findColorByItem} from "@/utils/Helper";
 import {SelectedItemContext} from "@/app/SelectedItemProvider";
 
@@ -12,7 +12,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default function Target() {
     const route = useRoute();
     const navigation = useNavigation();
-    const { target } = route.params;
+    const { target }: any = route.params;
     console.log("Target")
     console.log(target)
     const { setSelectedItem } = useContext(SelectedItemContext);
@@ -70,7 +70,16 @@ export default function Target() {
             >
                 <Button title={"Select"} onPress={() => {
                     setSelectedItem(target)
-                    navigation.navigate("main-tabs", { screen: "Home" })
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [
+                                {
+                                    name: "main-tabs",
+                                },
+                            ],
+                        })
+                    );
                 }}/>
 
 
@@ -116,7 +125,7 @@ export default function Target() {
                 <View style={styles.content}>
                     <View style={styles.typeRow}>
                         <Text style={styles.badge}>{target.type}</Text>
-                        <Text style={styles.badge}>{target.strange}</Text>
+                        <Text style={styles.badge}>{target.difficulty}</Text>
                     </View>
 
                     <Text style={styles.paragraph}>

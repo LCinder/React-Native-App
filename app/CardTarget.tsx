@@ -36,7 +36,7 @@ export function CardTarget({ target: originalItem, onPress }: Readonly<CardTarge
 
             <View style={styles.textContainer}>
                 <Text style={styles.text}>{itemToRender.type}</Text>
-                <Text style={styles.text}>{itemToRender.strange}</Text>
+                <Text style={styles.text}>{itemToRender.difficulty}</Text>
             </View>
         </Pressable>
     );

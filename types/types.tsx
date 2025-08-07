@@ -22,7 +22,7 @@ export type Target = {
     id: number,
     name: string,
     type: string,
-    strange: string,
+    difficulty: string,
     image_url: string,
     missionType: string,
     clue: string,

@@ -2,7 +2,7 @@ import React, {useContext, useEffect} from "react";
 import {Button, Pressable, StyleSheet, Text, View} from "react-native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useNavigation} from "@react-navigation/native";
-import {RootStackParamList} from "@/types/types";
+import {RootStackParamList, Target} from "@/types/types";
 import {SelectedItemContext} from "@/app/SelectedItemProvider";
 import {useTargets} from "@/app/TargetsContext";
 import {SelectedLevelContext} from "@/app/SelectedLevelContext";
@@ -41,11 +41,11 @@ export default function HomeScreen() {
                     /*if (!t.registered) {
                         stylesTarget = {...styles.target, backgroundColor: "#ff3232"}
                     }*/
-                    if(t.strange === selectedLevel?.difficulty) {
+                    if(t.difficulty === selectedLevel?.difficulty) {
                         stylesTarget = {...styles.target, backgroundColor: "#ff3232"}
                     }
                     return (
-                        <Pressable key={t.id} onPress={() => navigation.navigate("target", {target: t})}
+                        <Pressable key={t.id} onPress={() => navigation.navigate("target", {target: t as Target})}
                                    style={stylesTarget}>
                             <Text style={styleSelectedItem} key={t.id}>{t.name}</Text>
                         </Pressable>

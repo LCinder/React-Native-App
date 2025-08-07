@@ -8,7 +8,7 @@ export const ITEM_TEMPLATE = {
     id: 0,
     name: "???",
     type: "???",
-    strange: "???",
+    difficulty: "???",
     image_url: "???",
     missionType: "???",
     clue: "???",
@@ -41,7 +41,7 @@ export function findColorByItem(target: Target) {
         return "#000";
     }
 
-    switch (target?.strange) {
+    switch (target?.difficulty) {
         case "Basic":
             return colors[0];
         case "Medium":
@@ -61,7 +61,7 @@ export function retrieveRealItemState(target: Target) {
         id: target.id,
         name: "???",
         type: "???",
-        strange: "???",
+        difficulty: "???",
         image_url: target.image_url,
         registered: target.registered
     }
@@ -81,7 +81,7 @@ export async function fetchData() {
                     id: String(index),
                     name: json.name,
                     type: json.types[0].type.name,
-                    strange: String(json.base_experience),
+                    difficulty: String(json.base_experience),
                     image_url: json.sprites.other["official-artwork"].front_default,
                     registered: Math.floor(Math.random() * 2) === 1
                 };
@@ -101,7 +101,7 @@ export const fetchTempData = (): Target[] => {
                 id: 1,
                 name: "Monument ",
                 type: "Monument",
-                strange: "Medium",
+                difficulty: "Medium",
                 place: {
                     coords: {
                         latitude: 0,
@@ -122,7 +122,7 @@ export const fetchTempData = (): Target[] => {
         templateObject.id = i;
         templateObject.name += `${i}`;
         templateObject.place.name = allActivePlaces[placeIndex].name;
-        templateObject.strange = allLevels[levelsIndex].difficulty;
+        templateObject.difficulty = allLevels[levelsIndex].difficulty;
         templateObject.missionType = fetchMissionType()[missionTypeIndex].name;
         templateObject.place.coords = allActivePlaces[placeIndex].coords;
         templateObject.registered = registered === 0;

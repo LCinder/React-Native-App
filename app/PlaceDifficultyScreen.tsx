@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Button, FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {useNavigation} from "@react-navigation/native";
+import {CommonActions, useNavigation} from "@react-navigation/native";
 import {fetchAllLevels, findColorByLevel} from "@/utils/Helper";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {Level, RootStackParamList} from "@/types/types";
@@ -35,7 +35,19 @@ export default function PlaceDifficultyScreen() {
                     >
                         <Text style={styles.levelText}>{item.difficulty}</Text>
                         <Text style={styles.progressText}>0% completed</Text>
-                        <Button title={"Select"} onPress={() => setSelectedLevel(item)}></Button>
+                        <Button title={"Select"} onPress={() => {
+                            setSelectedLevel(item)
+                            navigation.dispatch(
+                                CommonActions.reset({
+                                    index: 0,
+                                    routes: [
+                                        {
+                                            name: "Home",
+                                        },
+                                    ],
+                                })
+                            );
+                        }}></Button>
 
                     </TouchableOpacity>
                 )}

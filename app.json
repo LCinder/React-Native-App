@@ -44,6 +44,13 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
         }
+      ],
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsImpl": "mapbox",
+            "RNMapboxMapsDownloadToken": "pk.eyJ1IjoibGNpbmRlciIsImEiOiJjbWUxZGRvZHkwaW94Mmtxeng4aGd3ZmFmIn0.gDWvM2g0GcSCIZnH3BlnDg"
+        }
       ]
     ],
     "experiments": {

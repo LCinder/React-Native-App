@@ -18,6 +18,7 @@ import {Ionicons} from "@expo/vector-icons";
 import {SelectedItemProvider} from "@/app/SelectedItemProvider";
 import {TargetsProvider} from "@/app/TargetsContext";
 import {SelectedLevelProvider} from "@/app/SelectedLevelContext";
+import Map from "@/app/Map";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -37,6 +38,11 @@ function MainTabs() {
                 )
             }}/>
             <Tab.Screen name="Targets" component={PlaceDifficultyScreen} options={{
+                tabBarIcon: ({ color, size }) => (
+                    <Ionicons name="map-outline" size={size} color={color} />
+                )
+            }}/>
+            <Tab.Screen name="Map" component={Map} options={{
                 tabBarIcon: ({ color, size }) => (
                     <Ionicons name="map-outline" size={size} color={color} />
                 )

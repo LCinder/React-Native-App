@@ -34,7 +34,7 @@ export default function Location() {
         if (dist < 20 && detectedLabels.length > 0 && !targetHit) {
             alert("You did it!");
             setTargetHit(true);
-            navigation.navigate("target", { target: 1 });
+            //navigation.navigate("target", { target: 1 });
         }
     }, [route.params?.labels, location]);
 
