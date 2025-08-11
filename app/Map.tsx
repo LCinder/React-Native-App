@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Button, Easing, StyleSheet, Text, View} from 'react-native';
+import {Animated, Button, Easing, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import * as LocationExpo from 'expo-location';
 import MapboxGL from '@rnmapbox/maps';
 import {getDistance} from 'geolib';
-import {useNavigation, useRoute} from "@react-navigation/native";
-import { MAPBOX_ACCESS_TOKEN } from '@env';
+import {useRoute} from "@react-navigation/native";
+import {MAPBOX_ACCESS_TOKEN} from '@env';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
@@ -12,7 +13,6 @@ export default function Map() {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
     const [targetHit, setTargetHit] = useState(false);
-    const navigation = useNavigation();
     const route = useRoute();
     const mapRef = useRef(null);
     const [headingFrozen, setHeadingFrozen] = useState(false);
@@ -22,38 +22,25 @@ export default function Map() {
 
     const [heading, setHeading] = useState(0);
 
+    const initialZoom = 19;
+    const initialPitch = 70;
+
+    const zoomOutLevel = 15;
+    const zoomOutPitch = 0;
+    const zoomOutBearing = 0;
+
+    const [zoom, setZoom] = useState(initialZoom);
+    const [pitch, setPitch] = useState(initialPitch);
+
     const target = {latitude: 37.109673, longitude: -3.590427};
 
     const handleButtonPress = () => {
         if (!location?.coords) return;
 
-        setHeadingFrozen(true);
-
-        const {longitude, latitude} = location.coords;
-
-        mapRef.current?.setCamera({
-            centerCoordinate: [longitude, latitude],
-            zoomLevel: 21,
-            pitch: 70,
-            heading: heading || 0,
-            animationDuration: 1000,
-            animationMode: "easeTo"
-        });
-
-        setTimeout(() => {
-            mapRef.current?.setCamera({
-                centerCoordinate: [longitude, latitude],
-                zoomLevel: 19,
-                pitch: 70,
-                heading: heading || 0,
-                animationDuration: 1000,
-                animationMode: "easeTo"
-            });
-
-            setTimeout(() => {
-                setHeadingFrozen(false);
-            }, 1000);
-        }, 1000);
+        setPitch(initialPitch);
+        setZoom(initialZoom);
+        setHeading(zoomOutBearing);
+        setHeadingFrozen(false);
     };
 
     useEffect(() => {
@@ -123,7 +110,6 @@ export default function Map() {
         }).start();
     };
 
-
     const handleMapTouch = () => {
         setHeadingFrozen(true);
     };
@@ -144,23 +130,11 @@ export default function Map() {
         }
     }, [route.params?.labels, location]);
 
-    const handleTakePhoto = () => {
-        navigation.navigate("camerarecognition", {
-            onReturn: (labels) => {
-                if (!labels || labels.length === 0) {
-                    alert("No labels detected.");
-                    return;
-                }
-
-                const labelText = labels.map(
-                    target => `${target.label} — ${(target.score * 100).toFixed(2)}%`
-                ).join("\n");
-
-                alert("Labels:\n" + labelText);
-                // navigation.navigate("target", { target: 1 });
-            }
-        });
-    };
+    const showTargets = () => {
+        setZoom(zoomOutLevel);
+        setPitch(zoomOutPitch);
+        setHeading(zoomOutBearing);
+    }
 
     const renderMap = () => {
         if (!location?.coords) {
@@ -170,8 +144,6 @@ export default function Map() {
                 </View>
             );
         }
-
-        const {latitude, longitude} = location.coords;
 
         return (
             <View style={{flex: 1}}>
@@ -184,17 +156,17 @@ export default function Map() {
                     onTouchStart={handleMapTouch}
                     rotateEnabled={true}
                 >
+                    <MapboxGL.UserLocation animated={true}/>
                     <MapboxGL.Camera
                         ref={mapRef}
-                        zoomLevel={19}
+                        heading={headingFrozen ? undefined : heading}
                         centerCoordinate={[location?.coords.longitude || 0, location?.coords.latitude || 0]}
-                        pitch={70}
-                        heading={!headingFrozen ? heading : 0}
                         animationMode="easeTo"
-                        animationDuration={500}
-                        minZoomLevel={15}
+                        pitch={pitch}
+                        zoomLevel={zoom}
+                        animationDuration={1000}
+                        minZoomLevel={12}
                     />
-                    <MapboxGL.UserLocation animated={true}/>
                     <MapboxGL.PointAnnotation
                         id="marker1"
                         coordinate={[-3.595152, 37.158607]}
@@ -202,13 +174,10 @@ export default function Map() {
                         <View style={styles.marker} />
                     </MapboxGL.PointAnnotation>
                 </MapboxGL.MapView>
-
-
-                <View style={styles.buttonContainer}>
-                    <Button title="Return to current position" onPress={handleButtonPress} />
-                    <Text style={styles.coords}>Lat: {latitude.toFixed(6)} | Lon: {longitude.toFixed(6)}</Text>
-                    <Text style={styles.coords}>Heading: {heading.toFixed(2)}°</Text>
-                </View>
+                <TouchableOpacity style={styles.roundButton} onPress={handleButtonPress}>
+                    <Icon name="locate-outline" size={28} color="white" />
+                </TouchableOpacity>
+                <Button title={"Show targets"} onPress={showTargets} />
             </View>
         );
     };
@@ -219,6 +188,21 @@ export default function Map() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    roundButton: {
+        position: "absolute",
+        bottom: 30,
+        right: 20,
+        width: 50,
+        height: 50,
+        backgroundColor: "#007AFF",
+        borderRadius: 25,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
     },
     buttonContainer: {
         position: 'absolute',
@@ -244,7 +228,7 @@ const styles = StyleSheet.create({
     },
     marker: {
         width: 30,
-        height: 100,
+        height: 30,
         backgroundColor: '#6684ff',
         borderRadius: 15,
         borderColor: 'white',
