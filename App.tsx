@@ -13,12 +13,13 @@ import MissionPathListScreen from './app/MissionPathListScreen';
 import Items from './app/Items';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Profile from "@/app/Profile";
+import Profile from "@/app/ProfileTabs";
 import {Ionicons} from "@expo/vector-icons";
 import {SelectedItemProvider} from "@/app/SelectedItemProvider";
 import {TargetsProvider} from "@/app/TargetsContext";
 import {SelectedLevelProvider} from "@/app/SelectedLevelContext";
 import Map from "@/app/Map";
+import ProfileTabs from "@/app/ProfileTabs";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -27,7 +28,7 @@ const options: NativeStackNavigationOptions = { animation: "fade", title: "" };
 function MainTabs() {
     return (
         <Tab.Navigator screenOptions={{ headerShown: false }}>
-            <Tab.Screen name="Profile" component={Profile} options={{
+            <Tab.Screen name="Profile" component={ProfileTabs} options={{
                 tabBarIcon: ({ color, size }) => (
                     <Ionicons name="person-outline" size={size} color={color} />
                 )
