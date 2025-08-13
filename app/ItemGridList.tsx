@@ -1,25 +1,21 @@
 import React from "react";
-import {FlatList, StyleSheet, View} from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import Card from "@/app/Card";
-import {MissionType, Target} from "@/types/types";
+import { CardItem } from "@/types/types";
 
-type ContainerListProps<T> = {
-    data: T[];
-    onPress: (target: T) => void
+type ContainerListProps = {
+    data: any;
+    onPress: (item: CardItem) => void;
 };
 
-export default function ItemGridList<T extends Target | MissionType>({
-    data,
-    onPress,
-}: Readonly<ContainerListProps<T>>) {
-
+export default function ItemGridList({ data, onPress }: Readonly<ContainerListProps>) {
     return (
         <View style={styles.resultContainer}>
             <FlatList
                 data={data}
-                keyExtractor={(target) => target.name}
+                keyExtractor={(item, index) => item.name}
                 numColumns={2}
-                renderItem={({ item }) => <Card target={item} onPress={() => onPress(item)} />}
+                renderItem={({ item }) => <Card item={item} onPress={onPress} />}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 100 }}
             />
