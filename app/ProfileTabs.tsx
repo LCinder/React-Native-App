@@ -22,7 +22,9 @@ const TopTab = createMaterialTopTabNavigator();
 
 export default function ProfileTabs() {
     return (
-        <View>
-        </View>
+        <TopTab.Navigator>
+            <TopTab.Screen name="Info" component={InfoScreen} />
+            <TopTab.Screen name="Settings" component={SettingsScreen} />
+        </TopTab.Navigator>
     );
 }
