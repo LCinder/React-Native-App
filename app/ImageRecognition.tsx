@@ -13,11 +13,11 @@ function ImageRecognition() {
                 }
 
                 const labelText = labels.map(
-                    target => `${target.label} — ${(target.score * 100).toFixed(2)}%`
+                    monument => `${monument.label} — ${(monument.score * 100).toFixed(2)}%`
                 ).join("\n");
 
                 alert("Labels:\n" + labelText);
-                // navigation.navigate("target", { target: 1 });
+                // navigation.navigate("monument", { monument: 1 });
             }
         });
     };

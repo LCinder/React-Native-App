@@ -22,8 +22,8 @@ export default function MissionPathListScreen() {
     };
 
     return (
-        <View>
-            <Text style={styles.title}>Targets</Text>
+        <View>r
+            <Text style={styles.title}>Monuments</Text>
             <ItemGridList data={missionTypes} onPress={handlePress} />
         </View>
     );

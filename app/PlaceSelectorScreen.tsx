@@ -4,35 +4,30 @@ import DropDownPicker from "react-native-dropdown-picker";
 import {useNavigation} from "@react-navigation/native";
 import {fetchAllActivePlaces} from "@/utils/Helper";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {LabelValue, Place, RootStackParamList} from "@/types/types";
-import {useTargets} from "@/app/TargetsContext";
+import {City, RootStackParamList} from "@/types/types";
+import {useMonuments} from "@/app/MonumentsContext";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "map-all-places">;
 
 export default function PlaceSelectorScreen() {
     const navigation = useNavigation<NavigationProp>();
     const [open, setOpen] = useState(false);
-    const [place, setPlace] = useState<string>("");
-    const [allActivePlaces, setAllActivePlaces] = useState<LabelValue[]>([]);
-    const {setZone} = useTargets();
+    const [cityIdSelected, setCityIdSelected] = useState<number>({});
+    const [allActivePlaces, setAllActivePlaces] = useState<City[]>([]);
+    const {setCity} = useMonuments();
 
     useEffect(() => {
         const activePlaces = fetchAllActivePlaces();
 
-        const items = activePlaces.map((place: Place) => ({
-            label: place.name,
-            value: place.name,
-        }));
-
-        setAllActivePlaces(items)
+        setAllActivePlaces(activePlaces)
     }, []);
 
-    const handleSelectPlace = (selectedValue: string | null) => {
-        if (!selectedValue) return;
-        const selectedPlace = allActivePlaces.find((p: LabelValue) => p.value === selectedValue);
+    const handleSelectPlace = (cityIdSelected: number | null) => {
+        if (!cityIdSelected) return;
+        const selectedPlace = allActivePlaces.find((c: City) => c.cityId === cityIdSelected);
 
         if (selectedPlace) {
-            setZone(selectedPlace.value);
+            setCity(selectedPlace);
             navigation.goBack();
         }
     };
@@ -43,9 +38,9 @@ export default function PlaceSelectorScreen() {
             <DropDownPicker
                 open={open}
                 setOpen={setOpen}
-                value={place}
-                setValue={setPlace}
-                items={allActivePlaces}
+                value={cityIdSelected}
+                setValue={setCityIdSelected}
+                items={allActivePlaces.map((c) => ({label: c.name, value: c.cityId}))}
                 placeholder="Select a place..."
                 onChangeValue={handleSelectPlace}
                 style={styles.dropdown}

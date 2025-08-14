@@ -1,96 +1,106 @@
-import {fetch} from "expo/fetch";
 import {
+    City,
     Level,
-    MissionType, Monument,
+    MissionType,
+    Monument,
     MonumentDiscovery,
     MonumentsByCity,
     MonumentsResult,
-    Place,
-    PlayerStats,
-    Target
+    PlayerStats
 } from "@/types/types";
 
 const colors = ["#AD8A56", "#B4B4B4", "#AF9500", "#000000",]
-export const colorPalette = ["#5d737e","#64b6ac","#c0fdfb","#daffef","#fcfffd"]
+export const colorPalette = ["#5d737e", "#64b6ac", "#c0fdfb", "#daffef", "#fcfffd"]
 
-export const ITEM_TEMPLATE = {
-    id: 0,
+export const ITEM_TEMPLATE: Monument = {
+    PK: "",
+    SK: "",
+    entityType: "Monument",
+    monumentId: 0,
     name: "???",
-    type: "???",
-    difficulty: "???",
-    image_url: "???",
-    missionType: "???",
-    clue: "???",
-    place: {
-        id: 0,
-        coords: {
-            latitude: 0,
-            longitude: 0
-        },
-        name: ""
-    },
-    registered: false
-}
+    coords: {latitude: 0, longitude: 0},
+    imageUrl: "",
+    clue: "",
+};
 
 export const findColorByLevel = (level: Level) => {
     switch (level.difficulty) {
-        case "Basic":
+        case "basic":
             return colors[0];
-        case "Medium":
+        case "medium":
             return colors[1];
-        case "Hard":
+        case "hard":
             return colors[2];
         default:
             return colors[3];
     }
+};
+
+export function findColorByItem(monument: Monument) {
+    if (!monument) return "#000";
+    return colors[1];
 }
 
-export function findColorByItem(target: Target) {
-    if (!target?.registered) {
-        return "#000";
-    }
-
-    switch (target?.difficulty) {
-        case "Basic":
-            return colors[0];
-        case "Medium":
-            return colors[1];
-        case "Hard":
-            return colors[2];
-        default:
-            return colors[3];
-    }
-}
-
-export function fetchCitiesVisitedByUser(): Place[] {
-    const places: Place[] = [
+export function fetchCitiesVisitedByUser(): City[] {
+    return [
         {
-            id: 0,
+            PK: "CITY#0",
+            SK: "METADATA",
+            entityType: "City",
+            cityId: 0,
             name: "Granada",
-            coords: {
-                latitude: 0,
-                longitude: 0
-            }
+            country: "Spain",
+            imageUrl: "",
+            coords: {latitude: 37.109673, longitude: -3.590427},
         },
         {
-            id: 1,
-            name: "Sevilla",
-            coords: {
-                latitude: 0,
-                longitude: 0
-            }
+            PK: "CITY#1",
+            SK: "METADATA",
+            entityType: "City",
+            cityId: 1,
+            name: "Florence",
+            country: "Italy",
+            imageUrl: "",
+            coords: {latitude: 43.7800127, longitude: 11.1997685},
         },
     ];
-
-    return places;
 }
-
-
 
 export function fetchPlacesByCityVisitedByUser(): MonumentsResult {
     const monuments: MonumentDiscovery[] = [
-        { monumentId: "m1", name: "Catedral de Sevilla", city: "Sevilla", dateDiscovered: "2025-08-13T10:00:00Z" },
-        { monumentId: "m2", name: "Torre del Oro", city: "Sevilla", dateDiscovered: "2025-08-12T15:20:00Z" },
+        {
+            PK: "USER#u1",
+            SK: "MONUMENT#m1",
+            entityType: "UserMonument",
+            userId: "u1",
+            monumentId: "m1",
+            name: "Duomo",
+            cityId: 1,
+            routeId: "historic",
+            discoveredAt: "2025-08-13T10:00:00Z"
+        },
+        {
+            PK: "USER#u1",
+            SK: "MONUMENT#m2",
+            entityType: "UserMonument",
+            userId: "u1",
+            monumentId: "m2",
+            name: "Palaccio",
+            cityId: 1,
+            routeId: "historic",
+            discoveredAt: "2025-08-12T15:20:00Z"
+        },
+        {
+            PK: "USER#u1",
+            SK: "MONUMENT#m2",
+            entityType: "UserMonument",
+            userId: "u1",
+            monumentId: "m2",
+            name: "Alhambra",
+            cityId: 0,
+            routeId: "historic",
+            discoveredAt: "2025-08-12T15:20:00Z"
+        },
     ];
 
     return {
@@ -99,123 +109,151 @@ export function fetchPlacesByCityVisitedByUser(): MonumentsResult {
     };
 }
 
-export function retrieveRealItemState(target: Target) {
-    if (target.registered) {
-        return target;
-    }
-    return {
-        id: target.id,
-        name: "???",
-        type: "???",
-        difficulty: "???",
-        image_url: target.image_url,
-        registered: target.registered
-    }
+export function retrieveRealItemState(monument: Monument) {
+    return monument || ITEM_TEMPLATE;
 }
 
-export async function fetchData() {
-    return fetch("https://pokeapi.co/api/v2/pokemon?limit=100")
-        .then(res => res.json())
-        .then(async json => {
-            const results = json.results;
+export const fetchTempData = (): Monument[] => {
+    const cities = fetchCitiesVisitedByUser();
+    const missionTypes = fetchMissionType();
+    const data: Monument[] = [];
 
-            const promises = results.map(async (p: { url: string; }, index: any) => {
-                const res = await fetch(p.url);
-                const json = await res.json();
-
-                return {
-                    id: String(index),
-                    name: json.name,
-                    type: json.types[0].type.name,
-                    difficulty: String(json.base_experience),
-                    image_url: json.sprites.other["official-artwork"].front_default,
-                    registered: Math.floor(Math.random() * 2) === 1
-                };
-            });
-            return await Promise.all(promises);
-        });
-}
-
-
-export const fetchTempData = (): Target[] => {
-    let data: any[] = [];
-    const allActivePlaces: Place[] = fetchAllActivePlaces()
-    const allLevels: Level[] = fetchAllLevels()
     for (let i = 0; i < 10; i++) {
-        let templateObject: Target =
-            {
-                id: 1,
-                name: "Monument ",
-                type: "Monument",
-                difficulty: "Medium",
-                place: {
-                    coords: {
-                        latitude: 0,
-                        longitude: 0
-                    },
-                    name: "",
-                    id: 0
-                },
-                missionType: "Aventurero",
-                image_url: "https://www.svgrepo.com/show/104228/arc-de-triomphe.svg",
-                registered: false,
-                clue: ""
-            }
-        let placeIndex = Math.floor(Math.random() * 2)
-        let registered = Math.floor(Math.random() * 2)
-        let levelsIndex = Math.floor(Math.random() * 3)
-        let missionTypeIndex = Math.floor(Math.random() * 4)
-        templateObject.id = i;
-        templateObject.name += `${i}`;
-        templateObject.place.name = allActivePlaces[placeIndex].name;
-        templateObject.difficulty = allLevels[levelsIndex].difficulty;
-        templateObject.missionType = fetchMissionType()[missionTypeIndex].name;
-        templateObject.place.coords = allActivePlaces[placeIndex].coords;
-        templateObject.registered = registered === 0;
-
-        data.push(templateObject)
+        const city = cities[i % cities.length];
+        const missionType = missionTypes[i % missionTypes.length];
+        data.push({
+            PK: `${city.PK}#LEVEL#0#ROUTE#${missionType.routeId}`,
+            SK: `MONUMENT#m${i}`,
+            entityType: "Monument",
+            monumentId: i,
+            name: `Monument ${i}`,
+            coords: city.coords,
+            imageUrl: "https://www.svgrepo.com/show/104228/arc-de-triomphe.svg",
+            clue: "",
+            GSI3PK: city.PK,
+            GSI3SK: `NAME#Monument ${i}`
+        });
     }
 
     return data;
+};
+
+export const fetchTempDataMonumentsByZoneId = (zoneId: number): Monument[] => {
+    return fetchTempData().filter(t => t.GSI3PK?.includes(`${zoneId}`));
+};
+
+export const fetchMissionType = (): MissionType[] => [
+    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r0", entityType: "MissionType", routeId: "r0", name: "visitante"},
+    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r1", entityType: "MissionType", routeId: "r1", name: "explorador"},
+    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r2", entityType: "MissionType", routeId: "r2", name: "coleccionista"},
+    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r3", entityType: "MissionType", routeId: "r3", name: "aventurero"}
+];
+
+export const fetchAllLevels = (): Level[] => [
+    {
+        PK: "CITY#granada",
+        SK: "LEVEL#0",
+        entityType: "Level",
+        levelId: "0",
+        cityId: "granada",
+        difficulty: "basic",
+        color: "Bronze"
+    },
+    {
+        PK: "CITY#granada",
+        SK: "LEVEL#1",
+        entityType: "Level",
+        levelId: "1",
+        cityId: "granada",
+        difficulty: "medium",
+        color: "Silver"
+    },
+    {
+        PK: "CITY#granada",
+        SK: "LEVEL#2",
+        entityType: "Level",
+        levelId: "2",
+        cityId: "granada",
+        difficulty: "hard",
+        color: "Gold"
+    },
+];
+
+export function fetchPlayerStats(): PlayerStats {
+    return {
+        totalPoints: 2450,
+        monuments: {
+            count: 5,
+            list: fetchPlacesByCityVisitedByUser().monuments
+        },
+        missions: {
+            total: 3,
+            list: [
+                {
+                    missionId: "miss1",
+                    title: "Historic Sevilla",
+                    cityId: "sevilla",
+                    routeId: "historic",
+                    completedAt: "2025-08-01"
+                },
+                {
+                    missionId: "miss2",
+                    title: "Historic Granada",
+                    cityId: "granada",
+                    routeId: "historic",
+                    completedAt: "2025-08-05"
+                },
+                {
+                    missionId: "miss3",
+                    title: "Historic Florence",
+                    cityId: "florence",
+                    routeId: "historic",
+                    completedAt: "2025-08-08"
+                },
+            ]
+        },
+        achievements: [
+            {id: "ach1", name: "Explorer", description: "Visit 10 monuments in a city", unlockedAt: "2025-08-05"},
+            {
+                id: "ach2",
+                name: "Traveller",
+                description: "Visit monuments in 3 different cities",
+                unlockedAt: "2025-08-08"
+            },
+        ],
+        trivials: {
+            total: 2,
+            averageScore: 85
+        },
+        totalPlayTimeMinutes: 540
+    };
 }
 
+export function groupMonumentsByCity(monuments: MonumentsResult[]): MonumentsByCity[] {
+    const map = new Map<string, Monument[]>();
+    monuments.forEach(m => {
+        const cityId = m.cityId; // CITY#cityId#LEVEL...
+        if (!map.has(cityId)) map.set(cityId, []);
+        map.get(cityId)!.push(m);
+        console.log(cityId)
+    });
 
-export const fetchTempDataTargetsByZone = (zone: string): Target[] => {
-    const targets: Target[] = fetchTempData()
-
-    return targets.filter(t => t.place.name === zone)
+    return Array.from(map.entries()).map(([cityId, monuments]) => ({cityId, monuments}));
 }
 
-export const fetchMissionType = (): MissionType[] => {
-
-    return [
-        {
-            name: "visitante",
-            id: 0
-        },
-        {
-            name: "explorador",
-            id: 1
-        },
-        {
-            name: "coleccionista",
-            id: 2
-        },
-        {
-            name: "aventurero",
-            id: 3
-        }
-    ]
-}
-
-export const fetchAllActivePlaces = (): Place[] => [
+export const fetchAllActivePlaces = (): City[] => [
     {
         name: "Granada",
         coords: {
             latitude: 37.109673,
             longitude: -3.590427
         },
-        id: 0
+        cityId: 0,
+        PK: "",
+        SK: "",
+        entityType: "City",
+        country: "",
+        imageUrl: ""
     },
     {
         name: "Florence",
@@ -223,81 +261,15 @@ export const fetchAllActivePlaces = (): Place[] => [
             latitude: 43.7800127,
             longitude: 11.1997685
         },
-        id: 1
+        cityId: 1,
+        PK: "",
+        SK: "",
+        entityType: "City",
+        country: "",
+        imageUrl: ""
     }
 ]
 
-export const fetchAllLevels = (): Level[] => [
-    {
-        difficulty: "Basic", color: "Bronze",
-        id: 0,
-        targets: []
-    },
-    {
-        difficulty: "Medium", color: "Silver",
-        id: 1,
-        targets: []
-    },
-    {
-        difficulty: "Hard", color: "Gold",
-        id: 2,
-        targets: []
-    },
-];
-
-
-export function fetchPlayerStats(): PlayerStats {
-    return {
-        totalPoints: 2450,
-        progressToNextLevel: 0.67,
-        monuments: {
-            count: 5,
-            list: [
-                { id: "m1", name: "Catedral de Sevilla", city: "Sevilla", route: "Historic" },
-                { id: "m2", name: "Alhambra", city: "Granada", route: "Historic" },
-                { id: "m3", name: "Sagrada Familia", city: "Barcelona", route: "Modern" },
-                { id: "m4", name: "Plaza Mayor", city: "Madrid", route: "Town Hall" },
-                { id: "m5", name: "Torre del Oro", city: "Sevilla", route: "Historic" },
-            ],
-        },
-        missions: {
-            total: 3,
-            list: [
-                { id: "miss1", name: "Historic Sevilla", city: "Sevilla", route: "Historic", completedAt: "2025-08-01" },
-                { id: "miss2", name: "Historic Granada", city: "Granada", route: "Historic", completedAt: "2025-08-05" },
-                { id: "miss3", name: "Historic Barcelona", city: "Barcelona", route: "Historic", completedAt: "2025-08-08" },
-            ],
-        },
-        achievements: [
-            { id: "ach1", title: "Explorer", description: "Visit 10 monuments in a cuty", unlockedAt: "2025-08-05" },
-            { id: "ach2", title: "Traveller", description: "Visitr monuments in 3 different cities", unlockedAt: "2025-08-08" },
-        ],
-        trivials: {
-            total: 2,
-            averageScore: 85,
-            list: [
-                { id: "t1", level: "medium", score: 80, completedAt: "2025-08-02" },
-                { id: "t2", level: "hard", score: 90, completedAt: "2025-08-06" },
-            ],
-        },
-        totalPlayTimeMinutes: 540,
-    };
+export function getCityNameById(cityId: string): string {
+    return cities.find(c => c.id === cityId)?.name || "Unknown city";
 }
-
-export function groupMonumentsByCity(monuments: Monument[]): MonumentsByCity[] {
-    const map = new Map<string, Monument[]>();
-
-    monuments.forEach(m => {
-        if (!map.has(m.city)) {
-            map.set(m.city, []);
-        }
-        map.get(m.city)!.push(m);
-    });
-
-    return Array.from(map.entries()).map(([city, monuments]) => ({
-        city,
-        monuments
-    }));
-}
-
-

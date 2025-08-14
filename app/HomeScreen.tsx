@@ -2,11 +2,10 @@ import React, {useContext, useEffect} from "react";
 import {Button, Pressable, StyleSheet, Text, View} from "react-native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useNavigation} from "@react-navigation/native";
-import {RootStackParamList, Target} from "@/types/types";
+import {RootStackParamList, Monument} from "@/types/types";
 import {SelectedItemContext} from "@/app/SelectedItemProvider";
-import {useTargets} from "@/app/TargetsContext";
+import {useMonuments} from "@/app/MonumentsContext";
 import {SelectedLevelContext} from "@/app/SelectedLevelContext";
-
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 
@@ -14,17 +13,21 @@ export default function HomeScreen() {
     const navigation = useNavigation<NavigationProp>();
     const {selectedItem} = useContext(SelectedItemContext);
     const {selectedLevel} = useContext(SelectedLevelContext);
-    const {targets} = useTargets();
+    const {monuments} = useMonuments();
 
-    useEffect(() => {
-        console.log("Loading targets: " + targets.length)
-    }, [targets]);
 
     const changeZone = () => {
         navigation.navigate("map-all-places")
     }
 
+    if(!monuments) return (
+        <View style={styles.changeZoneView}>
+            <Button title={"Change Zone"} onPress={changeZone}/>
+        </View>
+    )
+
     return (
+        monuments &&
         <View style={styles.container}>
             <View style={styles.changeZoneView}>
                 <Button title={"Change Zone"} onPress={changeZone}/>
@@ -32,22 +35,22 @@ export default function HomeScreen() {
             <View style={styles.container}>
                 <Text>{selectedLevel?.difficulty}</Text>
 
-                {targets.map(t => {
+                {monuments.map(t => {
                     let styleSelectedItem = {}
-                    let stylesTarget = {}
-                    if (t.id === selectedItem?.id) {
+                    let stylesMonument = {}
+                    if (t.monumentId === selectedItem?.monumentId) {
                         styleSelectedItem = styles.selectedItem
                     }
                     /*if (!t.registered) {
-                        stylesTarget = {...styles.target, backgroundColor: "#ff3232"}
+                        stylesMonument = {...styles.monument, backgroundColor: "#ff3232"}
                     }*/
-                    if(t.difficulty === selectedLevel?.difficulty) {
-                        stylesTarget = {...styles.target, backgroundColor: "#ff3232"}
-                    }
+                    /*if (t.difficulty === selectedLevel?.difficulty) {
+                        stylesMonument = {...styles.monument, backgroundColor: "#ff3232"}
+                    }*/
                     return (
-                        <Pressable key={t.id} onPress={() => navigation.navigate("target", {target: t as Target})}
-                                   style={stylesTarget}>
-                            <Text style={styleSelectedItem} key={t.id}>{t.name}</Text>
+                        <Pressable key={t.monumentId} onPress={() => navigation.navigate("monument", {monument: t as Monument})}
+                                   style={stylesMonument}>
+                            <Text style={styleSelectedItem} key={t.monumentId}>{t.name}</Text>
                         </Pressable>
                     )
                 })}
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: "bold"
     },
-    target: {
+    monument: {
         margin: 20,
     }
 });

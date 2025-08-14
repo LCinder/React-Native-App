@@ -9,12 +9,10 @@ const HEADER_MAX_HEIGHT = 450;
 const HEADER_MIN_HEIGHT = HEADER_MAX_HEIGHT / 2;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-export default function Target() {
+export default function Monument() {
     const route = useRoute();
     const navigation = useNavigation();
-    const { target }: any = route.params;
-    console.log("Target")
-    console.log(target)
+    const { monument }: any = route.params;
     const { setSelectedItem } = useContext(SelectedItemContext);
 
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -63,13 +61,13 @@ export default function Target() {
                 style={[
                     styles.header,
                     {
-                        backgroundColor: findColorByItem(target),
+                        backgroundColor: findColorByItem(monument),
                         height: headerHeight,
                     },
                 ]}
             >
                 <Button title={"Select"} onPress={() => {
-                    setSelectedItem(target)
+                    setSelectedItem(monument)
                     navigation.dispatch(
                         CommonActions.reset({
                             index: 0,
@@ -92,18 +90,18 @@ export default function Target() {
                             top: -70
                         }}
                     >
-                        <Text style={styles.title}>{target.name}</Text>
+                        <Text style={styles.title}>{monument.name}</Text>
                     </Animated.View>
 
                     <Animated.Image
-                        source={{uri: target.image_url}}
+                        source={{uri: monument.image_url}}
                         style={[
                             styles.image,
                             {
                                 transform: [{scale: imageScale},
                                     {translateX: imageTranslateX},
                                     {translateY: imageTranslateY},],
-                                tintColor: !target.registered ? "rgba(0, 0, 0, 1)" : undefined,
+                                tintColor: !monument.registered ? "rgba(0, 0, 0, 1)" : undefined,
                             },
                         ]}
                     />
@@ -124,8 +122,8 @@ export default function Target() {
 
                 <View style={styles.content}>
                     <View style={styles.typeRow}>
-                        <Text style={styles.badge}>{target.type}</Text>
-                        <Text style={styles.badge}>{target.difficulty}</Text>
+                        <Text style={styles.badge}>{monument.type}</Text>
+                        <Text style={styles.badge}>{monument.difficulty}</Text>
                     </View>
 
                     <Text style={styles.paragraph}>

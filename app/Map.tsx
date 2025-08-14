@@ -12,7 +12,7 @@ MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 export default function Map() {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
-    const [targetHit, setTargetHit] = useState(false);
+    const [monumentHit, setMonumentHit] = useState(false);
     const route = useRoute();
     const mapRef = useRef(null);
     const [headingFrozen, setHeadingFrozen] = useState(false);
@@ -32,7 +32,7 @@ export default function Map() {
     const [zoom, setZoom] = useState(initialZoom);
     const [pitch, setPitch] = useState(initialPitch);
 
-    const target = {latitude: 37.109673, longitude: -3.590427};
+    const monument = {latitude: 37.109673, longitude: -3.590427};
 
     const handleButtonPress = () => {
         if (!location?.coords) return;
@@ -120,17 +120,17 @@ export default function Map() {
 
         const dist = getDistance(
             {latitude: location.coords.latitude, longitude: location.coords.longitude},
-            target
+            monument
         );
 
-        if (dist < 20 && detectedLabels.length > 0 && !targetHit) {
+        if (dist < 20 && detectedLabels.length > 0 && !monumentHit) {
             alert("You did it!");
-            setTargetHit(true);
-            // navigation.navigate("target", { target: 1 });
+            setMonumentHit(true);
+            // navigation.navigate("monument", { monument: 1 });
         }
     }, [route.params?.labels, location]);
 
-    const showTargets = () => {
+    const showMonuments = () => {
         setZoom(zoomOutLevel);
         setPitch(zoomOutPitch);
         setHeading(zoomOutBearing);
@@ -177,7 +177,7 @@ export default function Map() {
                 <TouchableOpacity style={styles.roundButton} onPress={handleButtonPress}>
                     <Icon name="locate-outline" size={28} color="white" />
                 </TouchableOpacity>
-                <Button title={"Show targets"} onPress={showTargets} />
+                <Button title={"Show monuments"} onPress={showMonuments} />
             </View>
         );
     };

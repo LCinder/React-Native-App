@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import {FlatList, StyleSheet, Text, View} from "react-native";
+import {FlatList, ScrollView, StyleSheet, Text, View} from "react-native";
 import {fetchPlayerStats, groupMonumentsByCity} from "@/utils/Helper";
 import ItemGridList from "@/app/ItemGridList";
 import {MonumentsByCity, PlayerStats} from "@/types/types";
@@ -8,20 +8,19 @@ import {MonumentsByCity, PlayerStats} from "@/types/types";
 function InfoScreen() {
 
     const [playerStats, setPlayerStats] = useState<PlayerStats>(undefined)
-    const [grouped, setGrouped] = useState<MonumentsByCity>(undefined)
+    const [grouped, setGrouped] = useState<MonumentsByCity[]>(undefined)
 
     useEffect(() => {
         const data = fetchPlayerStats()
         setPlayerStats(data)
 
         setGrouped(groupMonumentsByCity(data?.monuments?.list));
-        console.log(groupMonumentsByCity(data?.monuments?.list))
     }, []);
 
     if (!playerStats) return <Text>Loading...</Text>;
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>All points: {playerStats.totalPoints}</Text>
 
             <Text style={styles.section}>Monuments unlocked: {playerStats.monuments.count}</Text>
@@ -30,10 +29,10 @@ function InfoScreen() {
 
             <FlatList
                 data={grouped}
-                keyExtractor={(c) => c.city}
+                keyExtractor={(c) => c.cityId}
                 renderItem={({ item }) => (
-                    <View>
-                        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{item.city}</Text>
+                    <View style={styles.header}>
+                        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{item.cityId}</Text>
                         <ItemGridList
                             data={item.monuments}
                             onPress={(m) => console.log("Monument:", m)}
@@ -48,7 +47,7 @@ function InfoScreen() {
             ))}
 
             <Text style={styles.section}>Trivials: {playerStats.trivials.total} (Average: {playerStats.trivials.averageScore}%)</Text>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -64,7 +63,10 @@ const TopTab = createMaterialTopTabNavigator();
 
 export default function ProfileTabs() {
     return (
-        <TopTab.Navigator>
+        <TopTab.Navigator lazy={true}
+                          screenOptions={{
+                              swipeEnabled: true,
+                          }}>
             <TopTab.Screen name="Info" component={InfoScreen}/>
             <TopTab.Screen name="Settings" component={SettingsScreen}/>
         </TopTab.Navigator>

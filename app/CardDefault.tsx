@@ -1,8 +1,6 @@
 import React from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {colorPalette} from "@/utils/Helper";
-import {MissionType} from "@/types/types";
-import { Button } from "react-native";
 
 type CardMissionTypeProps = {
     item: any;
@@ -17,7 +15,7 @@ export function CardDefault({item, onPress}: Readonly<CardMissionTypeProps>) {
             </View>
 
             {/*<View style={styles.imageContainer}>
-                <RemoteSVG uri={target.image_url} color={colorPalette[3]} />
+                <RemoteSVG uri={monument.image_url} color={colorPalette[3]} />
             </View>*/}
         </Pressable>
     );

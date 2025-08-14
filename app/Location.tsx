@@ -8,12 +8,12 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 export default function Location() {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
-    const [targetHit, setTargetHit] = useState(false);
+    const [monumentHit, setMonumentHit] = useState(false);
     const [isInsideRadius, setIsInsideRadius] = useState(false);
     const navigation = useNavigation();
     const route = useRoute();
 
-    const target = { latitude: 37.109673, longitude: -3.590427 };
+    const monument = { latitude: 37.109673, longitude: -3.590427 };
 
     useEffect(() => {
         (async () => {
@@ -30,11 +30,11 @@ export default function Location() {
         const detectedLabels = route.params?.labels;
         if (!detectedLabels || !location?.coords) return;
 
-        const dist = getDistance(location.coords, target);
-        if (dist < 20 && detectedLabels.length > 0 && !targetHit) {
+        const dist = getDistance(location.coords, monument);
+        if (dist < 20 && detectedLabels.length > 0 && !monumentHit) {
             alert("You did it!");
-            setTargetHit(true);
-            //navigation.navigate("target", { target: 1 });
+            setMonumentHit(true);
+            //navigation.navigate("monument", { monument: 1 });
         }
     }, [route.params?.labels, location]);
 
@@ -42,7 +42,7 @@ export default function Location() {
         try {
             const loc = await LocationExpo.getCurrentPositionAsync({});
             setLocation(loc);
-            const withinRadius = getDistance(loc.coords, target) < 15;
+            const withinRadius = getDistance(loc.coords, monument) < 15;
             setIsInsideRadius(withinRadius);
         } catch (err) {
             console.error("Error getting location:", err);
@@ -59,11 +59,11 @@ export default function Location() {
                 }
 
                 const labelText = labels.map(
-                    target => `${target.label} — ${(target.score * 100).toFixed(2)}%`
+                    monument => `${monument.label} — ${(monument.score * 100).toFixed(2)}%`
                 ).join("\n");
 
                 alert("Labels:\n" + labelText);
-                // navigation.navigate("target", { target: 1 });
+                // navigation.navigate("monument", { monument: 1 });
             }
         });
     };
@@ -78,7 +78,7 @@ export default function Location() {
         }
 
         const { latitude, longitude } = location.coords;
-        const distanceToTarget = getDistance(location.coords, target);
+        const distanceToMonument = getDistance(location.coords, monument);
 
         return (
             <>
@@ -96,7 +96,7 @@ export default function Location() {
                     <UrlTile
                         urlTemplate="https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=TI32OVxxl9rThTmshOHA"
                     />
-                    <Marker coordinate={target} />
+                    <Marker coordinate={monument} />
                 </MapView>
 
                 <View style={styles.buttonContainer}>
@@ -105,7 +105,7 @@ export default function Location() {
                     <Text style={styles.coords}>
                         Lat: {latitude?.toFixed(6)}{"\n"}
                         Lon: {longitude?.toFixed(6)}{"\n"}
-                        Distance to Marker: {distanceToTarget} m
+                        Distance to Marker: {distanceToMonument} m
                     </Text>
                 </View>
             </>

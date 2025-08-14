@@ -1,9 +1,9 @@
 import React, { createContext, useState, ReactNode, useMemo } from "react";
-import {Target} from "@/types/types";
+import {Monument} from "@/types/types";
 
 type SelectedItemContextType = {
-    selectedItem: Target | null;
-    setSelectedItem: (name: Target | null) => void;
+    selectedItem: Monument | null;
+    setSelectedItem: (name: Monument | null) => void;
 };
 
 export const SelectedItemContext = createContext<SelectedItemContextType>({
@@ -12,7 +12,7 @@ export const SelectedItemContext = createContext<SelectedItemContextType>({
 });
 
 export const SelectedItemProvider = ({ children }: { children: ReactNode }) => {
-    const [selectedItem, setSelectedItem] = useState<Target | null>(null);
+    const [selectedItem, setSelectedItem] = useState<Monument | null>(null);
 
     const value = useMemo(
         () => ({ selectedItem, setSelectedItem }),

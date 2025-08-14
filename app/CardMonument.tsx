@@ -1,24 +1,24 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colorPalette, findColorByItem, ITEM_TEMPLATE } from "@/utils/Helper";
-import { RemoteSVG } from "@/app/RemoteSVG";
-import { Target } from "@/types/types";
+import {Pressable, StyleSheet, Text, View} from "react-native";
+import {colorPalette, findColorByItem, ITEM_TEMPLATE} from "@/utils/Helper";
+import {RemoteSVG} from "@/app/RemoteSVG";
+import {Monument} from "@/types/types";
 
-type CardTargetProps = {
-    target: Target;
-    onPress: (target: Target) => void;
+type CardMonumentProps = {
+    monument: Monument;
+    onPress: (monument: Monument) => void;
 };
 
-export function CardTarget({ target: originalItem, onPress }: Readonly<CardTargetProps>) {
-    const itemToRender: Target = originalItem.registered
+export function CardMonument({monument: originalItem, onPress}: Readonly<CardMonumentProps>) {
+    const itemToRender: Monument = originalItem.registered
         ? originalItem
-        : { ...ITEM_TEMPLATE, image_url: originalItem.image_url };
+        : {...ITEM_TEMPLATE, imageUrl: originalItem.imageUrl};
 
     const color = findColorByItem(itemToRender);
 
     return (
         <Pressable
-            style={[styles.container, { backgroundColor: color }]}
+            style={[styles.container, {backgroundColor: color}]}
             onPress={() => onPress(itemToRender)}
         >
             <View style={styles.header}>
@@ -27,7 +27,7 @@ export function CardTarget({ target: originalItem, onPress }: Readonly<CardTarge
 
             <View style={styles.imageContainer}>
                 <RemoteSVG
-                    uri={itemToRender.image_url}
+                    uri={itemToRender.imageUrl}
                     color={
                         itemToRender.registered ? colorPalette[3] : colorPalette[0]
                     }

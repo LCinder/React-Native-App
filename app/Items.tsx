@@ -3,31 +3,32 @@ import {StyleSheet, Text, View} from "react-native";
 import {RouteProp, useNavigation, useRoute} from "@react-navigation/native";
 import ItemGridList from "./ItemGridList";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {RootStackParamList, Target} from "@/types/types";
-import {useTargets} from "@/app/TargetsContext";
+import {RootStackParamList, Monument} from "@/types/types";
+import {useMonuments} from "@/app/MonumentsContext";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "items">;
 
 export default function Items() {
-    const [data, setData] = useState<Target[]>([]);
+    const [data, setData] = useState<Monument[]>([]);
     const navigation = useNavigation<NavigationProp>();
     const {missionType, level} = useRoute<RouteProp<RootStackParamList, "items">>().params;
-    const {targets} = useTargets();
+    const {monuments, monumentLevels} = useMonuments();
 
     useEffect(() => {
+        console.log(monuments)
         const result =
-            targets
-                .filter((i) => i.missionType === missionType.name)
-                .filter((i) => i.difficulty === level.difficulty);
+            monuments
+                //.filter((i) => i.missionType === missionType.name)
+                //.filter((i) => i.difficulty === level.difficulty);
         setData(result);
-    }, [missionType.name, level.difficulty, targets]);
+    }, [missionType.name, level.difficulty, monuments]);
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{missionType.name}</Text>
             <ItemGridList
                 data={data}
-                onPress={(target: Target) => navigation.navigate("target", {target: target as Target})}
+                onPress={(monument: Monument) => navigation.navigate("monument", {monument})}
             />
         </View>
     );
