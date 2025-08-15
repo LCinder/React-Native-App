@@ -15,7 +15,6 @@ export default function Items() {
     const {monuments, monumentLevels} = useMonuments();
 
     useEffect(() => {
-        console.log(monuments)
         const result =
             monuments
                 //.filter((i) => i.missionType === missionType.name)

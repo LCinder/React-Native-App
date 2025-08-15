@@ -1,59 +1,75 @@
-import React, {useEffect, useState} from "react";
-import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
-import {FlatList, ScrollView, StyleSheet, Text, View} from "react-native";
-import {fetchPlayerStats, groupMonumentsByCity} from "@/utils/Helper";
-import ItemGridList from "@/app/ItemGridList";
-import {MonumentsByCity, PlayerStats} from "@/types/types";
+import React, { useEffect, useState } from "react";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+    fetchCityObjectivesExample,
+    fetchPlayerStats
+} from "@/utils/Helper";
+import { CityObjectives, PlayerStats } from "@/types/types";
 
 function InfoScreen() {
-
-    const [playerStats, setPlayerStats] = useState<PlayerStats>(undefined)
-    const [grouped, setGrouped] = useState<MonumentsByCity[]>(undefined)
+    const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
+    const [cityObjectives, setCityObjectives] = useState<Map<number, CityObjectives> | null>(null);
 
     useEffect(() => {
-        const data = fetchPlayerStats()
-        setPlayerStats(data)
+        const data = fetchPlayerStats();
+        setPlayerStats(data);
 
-        setGrouped(groupMonumentsByCity(data?.monuments?.list));
+        const cityObjData = fetchCityObjectivesExample();
+        setCityObjectives(cityObjData);
     }, []);
 
-    if (!playerStats) return <Text>Loading...</Text>;
+    if (!playerStats || !cityObjectives) return <Text>Loading...</Text>;
 
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>All points: {playerStats.totalPoints}</Text>
 
-            <Text style={styles.section}>Monuments unlocked: {playerStats.monuments.count}</Text>
-
-            <Text style={styles.section}>Misions completed: {playerStats.missions.total}</Text>
-
             <FlatList
-                data={grouped}
-                keyExtractor={(c) => c.cityId}
-                renderItem={({ item }) => (
-                    <View style={styles.header}>
-                        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{item.cityId}</Text>
-                        <ItemGridList
-                            data={item.monuments}
-                            onPress={(m) => console.log("Monument:", m)}
-                        />
-                    </View>
-                )}
+                data={Array.from(cityObjectives.values())}
+                keyExtractor={(c) => c.cityId.toString()}
+                renderItem={({ item }) => {
+                    const discovered = item.monumentsDiscovered || [];
+                    const allMonuments = item.allMonuments || [];
+                    console.log(item.allMonuments)
+                    const locked = allMonuments.filter(m => !discovered.some(d => d.monumentId === m.monumentId));
+
+                    return (
+                        <View style={styles.cityCard}>
+                            <Text style={styles.cityTitle}>{item.cityName}</Text>
+                            <Text style={styles.text}>
+                                Missions Completed: {item.missionsCompleted.length} / {allMonuments.length} monuments
+                            </Text>
+
+                            <Text style={styles.section}>Discovered Monuments</Text>
+                            {discovered.map(m => (
+                                <View key={m.monumentId} style={styles.monumentCard}>
+                                    <Text style={styles.text}>{m.name}</Text>
+                                </View>
+                            ))}
+
+                            <Text style={styles.section}>Locked Monuments</Text>
+                            {locked.map(m => (
+                                <View key={m.monumentId} style={styles.monumentCard}>
+                                    <Text style={styles.text}>{m.name}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    );
+                }}
             />
 
             <Text style={styles.section}>Honors</Text>
             {playerStats.achievements.map(a => (
-                <Text key={a.id}>🏅 {a.title} - {a.description}</Text>
+                <Text key={a.id}>🏅 {a.name} - {a.description}</Text>
             ))}
-
-            <Text style={styles.section}>Trivials: {playerStats.trivials.total} (Average: {playerStats.trivials.averageScore}%)</Text>
         </ScrollView>
     );
 }
 
 function SettingsScreen() {
     return (
-        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <Text>Settings</Text>
         </View>
     );
@@ -63,16 +79,12 @@ const TopTab = createMaterialTopTabNavigator();
 
 export default function ProfileTabs() {
     return (
-        <TopTab.Navigator lazy={true}
-                          screenOptions={{
-                              swipeEnabled: true,
-                          }}>
-            <TopTab.Screen name="Info" component={InfoScreen}/>
-            <TopTab.Screen name="Settings" component={SettingsScreen}/>
+        <TopTab.Navigator lazy={true} screenOptions={{ swipeEnabled: true }}>
+            <TopTab.Screen name="Info" component={InfoScreen} />
+            <TopTab.Screen name="Settings" component={SettingsScreen} />
         </TopTab.Navigator>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {
@@ -80,25 +92,36 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         flex: 1
     },
-    header: {
-        alignItems: "center",
-        margin: 15,
-    },
     title: {
         fontWeight: "bold",
         fontSize: 20,
         color: "#fff",
+        marginBottom: 10
     },
-    textContainer: {
-        backgroundColor: "rgba(255,255,255,0.3)",
-        padding: 10,
-        alignItems: "center",
+    section: {
+        marginTop: 15,
+        fontWeight: "bold",
+        color: "#fff"
     },
     text: {
         color: "#fff",
     },
-    imageContainer: {
-        alignItems: "center",
+    cityCard: {
+        marginVertical: 10,
+        padding: 10,
+        backgroundColor: "#33324b",
+        borderRadius: 10
     },
-    section: {marginTop: 20, fontWeight: "bold"},
+    cityTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "#fff",
+        marginBottom: 5
+    },
+    monumentCard: {
+        marginVertical: 5,
+        padding: 8,
+        backgroundColor: "#5d737e",
+        borderRadius: 8
+    }
 });

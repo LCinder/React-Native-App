@@ -18,7 +18,7 @@ export type Level = {
     SK: string,                     // LEVEL#{levelId}
     entityType: "Level",
     levelId: string,
-    cityId: string,
+    cityId: number,
     difficulty: "basic" | "medium" | "hard",
     color: string,
     GSI2PK?: string,                 // LEVEL#{difficulty}
@@ -48,6 +48,7 @@ export type Monument = {
     SK: string,                     // MONUMENT#{monumentId}
     entityType: "Monument",
     monumentId: number,
+    cityId: number,
     name: string,
     coords: LatLng,
     imageUrl: string,
@@ -62,7 +63,7 @@ export type MissionCatalog = {
     entityType: "MissionCatalog",
     missionId: string,
     title: string,
-    cityId: string,
+    cityId: number,
     routeId: string,
     stops: number,
     estimatedMinutes: number,
@@ -88,9 +89,10 @@ export type MonumentDiscovery = {
     SK: string,                     // MONUMENT#{monumentId}
     entityType: "UserMonument",
     userId: string,
-    monumentId: string,
+    monumentId: number,
     name: string,
     cityId: number,
+    cityName: string,
     routeId: string,
     discoveredAt: string,           // ISO 8601
     GSI6PK?: string,                 // CITY#{cityId}
@@ -104,7 +106,7 @@ export type UserMissionCompleted = {
     userId: string,
     missionId: string,
     title: string,
-    cityId: string,
+    cityId: number,
     routeId: string,
     completedAt: string,
     GSI7PK?: string,                 // CITY#{cityId}
@@ -136,9 +138,20 @@ export type UserTrivial = {
 };
 
 export type MonumentsByCity = {
-    cityId: number;
-    monuments: Monument[];
+    cityId: number,
+    cityName: string,
+    monuments: MonumentDiscovery[];
 };
+
+export type CityObjectives = {
+    cityId: number;
+    cityName: string;
+    monumentsDiscovered: MonumentDiscovery[];
+    allMonuments?: Monument[];
+    missionsCompleted: CompletedMission[];
+    trivials?: UserTrivial[];
+};
+
 
 export type MonumentsResult = {
     count: number;
@@ -148,7 +161,7 @@ export type MonumentsResult = {
 export type CompletedMission = {
     missionId: string;
     title: string;
-    cityId: string;
+    cityId: number;
     routeId: string;
     completedAt: string;
 };
