@@ -1,67 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import {
-    fetchCityObjectivesExample,
-    fetchPlayerStats
+    fetchCitiesVisitedByUser,
+    fetchUserStatsSummary
 } from "@/utils/Helper";
-import { CityObjectives, PlayerStats } from "@/types/types";
+import { City, UserStatsSummaryTable } from "@/types/types";
 
 function InfoScreen() {
-    const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
-    const [cityObjectives, setCityObjectives] = useState<Map<number, CityObjectives> | null>(null);
+    const [userStatsSummary, setUserStatsSummary] = useState<UserStatsSummaryTable | null>(null);
+    const [cityObjectives, setCityObjectives] = useState<City[] | null>(null);
 
     useEffect(() => {
-        const data = fetchPlayerStats();
-        setPlayerStats(data);
+        const data = fetchUserStatsSummary();
+        setUserStatsSummary(data);
 
-        const cityObjData = fetchCityObjectivesExample();
+        const cityObjData = fetchCitiesVisitedByUser();
         setCityObjectives(cityObjData);
     }, []);
 
-    if (!playerStats || !cityObjectives) return <Text>Loading...</Text>;
+    if (!userStatsSummary || !cityObjectives) return <Text>Loading...</Text>;
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>All points: {playerStats.totalPoints}</Text>
+            <Text style={styles.title}>All points: {userStatsSummary.totalPoints}</Text>
 
-            <FlatList
-                data={Array.from(cityObjectives.values())}
-                keyExtractor={(c) => c.cityId.toString()}
-                renderItem={({ item }) => {
-                    const discovered = item.monumentsDiscovered || [];
-                    const allMonuments = item.allMonuments || [];
-                    console.log(item.allMonuments)
-                    const locked = allMonuments.filter(m => !discovered.some(d => d.monumentId === m.monumentId));
-
-                    return (
-                        <View style={styles.cityCard}>
-                            <Text style={styles.cityTitle}>{item.cityName}</Text>
-                            <Text style={styles.text}>
-                                Missions Completed: {item.missionsCompleted.length} / {allMonuments.length} monuments
-                            </Text>
-
-                            <Text style={styles.section}>Discovered Monuments</Text>
-                            {discovered.map(m => (
-                                <View key={m.monumentId} style={styles.monumentCard}>
-                                    <Text style={styles.text}>{m.name}</Text>
-                                </View>
-                            ))}
-
-                            <Text style={styles.section}>Locked Monuments</Text>
-                            {locked.map(m => (
-                                <View key={m.monumentId} style={styles.monumentCard}>
-                                    <Text style={styles.text}>{m.name}</Text>
-                                </View>
-                            ))}
-                        </View>
-                    );
-                }}
-            />
+            userStatsSummary.recentMonuments.map((m) => (
+                <View>
+                <Text>{m.cityName}</Text>
+                m.map(rm => (
+                    <Text>{rm.name}</Text>
+                ))
+                </View>
+            ))
 
             <Text style={styles.section}>Honors</Text>
-            {playerStats.achievements.map(a => (
-                <Text key={a.id}>🏅 {a.name} - {a.description}</Text>
+            {userStatsSummary.achievements?.map(a => (
+                <Text key={a.achievementId}>🏅 {a.name} - {a.description}</Text>
             ))}
         </ScrollView>
     );

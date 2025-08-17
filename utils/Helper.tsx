@@ -1,34 +1,35 @@
 import {
-    City, CityObjectives, CompletedMission,
+    City,
     Level,
-    MissionType,
     Monument,
-    MonumentDiscovery,
-    MonumentsByCity,
-    MonumentsResult,
-    PlayerStats
+    UserMonumentDiscovery,
+    Route,
+    Mission,
+    Achievement,
+    UserProfile,
+    UserStatsSummaryTable,
+    MonumentsByCitySummary,
+    UserTrivial,
+    UserAchievement,
+    UserMissionProgress
 } from "@/types/types";
+import { LatLng } from "react-native-maps";
 
 const colors = ["#AD8A56", "#B4B4B4", "#AF9500", "#000000"];
 export const colorPalette = ["#5d737e", "#64b6ac", "#c0fdfb", "#daffef", "#fcfffd"];
 
-export const ITEM_TEMPLATE: Monument = {
-    PK: "",
-    SK: "",
-    entityType: "Monument",
-    monumentId: 0,
-    name: "???",
-    coords: {latitude: 0, longitude: 0},
-    imageUrl: "",
-    clue: "",
-};
 
+// -------------------- COLORS --------------------
 export const findColorByLevel = (level: Level) => {
     switch (level.difficulty) {
-        case "basic": return colors[0];
-        case "medium": return colors[1];
-        case "hard": return colors[2];
-        default: return colors[3];
+        case "basic":
+            return colors[0];
+        case "medium":
+            return colors[1];
+        case "hard":
+            return colors[2];
+        default:
+            return colors[3];
     }
 };
 
@@ -37,208 +38,361 @@ export function findColorByItem(monument: Monument) {
     return colors[1];
 }
 
-export function fetchCitiesVisitedByUser(): City[] {
+// ================== CORE ENTITIES ==================
+
+export const fetchCity = (): City => {
+    return {
+        PK: "CITY#1",
+        SK: "METADATA",
+        entityType: "City",
+        cityId: "1",
+        name: "Florence",
+        country: "Italy",
+        imageUrl: "https://example.com/florence.jpg",
+        coords: { latitude: 43.7696, longitude: 11.2558 },
+        GSI1PK: "COUNTRY#Italy",
+        GSI1SK: "CITY#1"
+    };
+};
+
+export const fetchLevels = (cityId: string): Level[] => {
     return [
         {
-            PK: "CITY#0",
-            SK: "METADATA",
-            entityType: "City",
-            cityId: 0,
-            name: "Granada",
-            country: "Spain",
-            imageUrl: "",
-            coords: {latitude: 37.109673, longitude: -3.590427},
+            PK: `CITY#${cityId}`,
+            SK: "LEVEL#1",
+            entityType: "Level",
+            levelId: "1",
+            cityId,
+            difficulty: "basic",
+            color: "#FFD700",
+            GSI1PK: "DIFFICULTY#basic",
+            GSI1SK: `CITY#${cityId}#LEVEL#1`
         },
         {
-            PK: "CITY#1",
-            SK: "METADATA",
-            entityType: "City",
-            cityId: 1,
-            name: "Florence",
-            country: "Italy",
-            imageUrl: "",
-            coords: {latitude: 43.7800127, longitude: 11.1997685},
-        },
-    ];
-}
-
-export function fetchPlacesByCityVisitedByUser(): MonumentsResult {
-    const monuments: MonumentDiscovery[] = [
-        {
-            PK: "USER#u1",
-            SK: "MONUMENT#m1",
-            entityType: "UserMonument",
-            userId: "u1",
-            monumentId: 0,
-            name: "Duomo",
-            cityId: 1,
-            routeId: "historic",
-            discoveredAt: "2025-08-13T10:00:00Z",
-            cityName: "Florence"
-        },
-        {
-            PK: "USER#u1",
-            SK: "MONUMENT#m2",
-            entityType: "UserMonument",
-            userId: "u1",
-            monumentId: 2,
-            name: "Palaccio",
-            cityId: 1,
-            routeId: "historic",
-            discoveredAt: "2025-08-12T15:20:00Z",
-            cityName: "Florence"
-        },
-        {
-            PK: "USER#u1",
-            SK: "MONUMENT#m3",
-            entityType: "UserMonument",
-            userId: "u1",
-            monumentId: 0,
-            name: "Alhambra",
-            cityId: 0,
-            routeId: "historic",
-            discoveredAt: "2025-08-12T15:20:00Z",
-            cityName: "Granada"
-        },
-    ];
-
-    return { count: monuments.length, monuments };
-}
-
-export function retrieveRealItemState(monument: Monument) {
-    return monument || ITEM_TEMPLATE;
-}
-
-export const fetchTempData = (): Monument[] => {
-    const cities = fetchCitiesVisitedByUser();
-    const missionTypes = fetchMissionType();
-    const data: Monument[] = [];
-
-    for (let i = 0; i < 10; i++) {
-        const city = cities[i % cities.length];
-        const missionType = missionTypes[i % missionTypes.length];
-        data.push({
-            PK: `${city.PK}#LEVEL#0#ROUTE#${missionType.routeId}`,
-            SK: `MONUMENT#m${i}`,
-            entityType: "Monument",
-            monumentId: i,
-            name: `Monument ${i}`,
-            coords: city.coords,
-            imageUrl: "https://www.svgrepo.com/show/104228/arc-de-triomphe.svg",
-            clue: "",
-            GSI3PK: city.PK,
-            GSI3SK: `NAME#Monument ${i}`,
-            cityId: city.cityId
-        });
-    }
-
-    return data;
-};
-
-export const fetchTempDataMonumentsByZoneId = (zoneId: number): Monument[] => {
-    return fetchTempData().filter(t => t.GSI3PK?.includes(`${zoneId}`));
-};
-
-export const fetchMissionType = (): MissionType[] => [
-    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r0", entityType: "MissionType", routeId: "r0", name: "visitante"},
-    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r1", entityType: "MissionType", routeId: "r1", name: "explorador"},
-    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r2", entityType: "MissionType", routeId: "r2", name: "coleccionista"},
-    {PK: "CITY#0#LEVEL#0", SK: "ROUTE#r3", entityType: "MissionType", routeId: "r3", name: "aventurero"}
-];
-
-export const fetchAllLevels = (): Level[] => [
-    {PK: "CITY#granada", SK: "LEVEL#0", entityType: "Level", levelId: "0", cityId: "granada", difficulty: "basic", color: "Bronze"},
-    {PK: "CITY#granada", SK: "LEVEL#1", entityType: "Level", levelId: "1", cityId: "granada", difficulty: "medium", color: "Silver"},
-    {PK: "CITY#granada", SK: "LEVEL#2", entityType: "Level", levelId: "2", cityId: "granada", difficulty: "hard", color: "Gold"},
-];
-
-export function fetchPlayerStats(): PlayerStats {
-    return {
-        totalPoints: 2450,
-        monuments: {
-            count: 3,
-            list: fetchPlacesByCityVisitedByUser().monuments
-        },
-        missions: {
-            total: 3,
-            list: [
-                { missionId: "miss1", title: "Historic Florence 2", cityId: 1, routeId: "historic", completedAt: "2025-08-01" },
-                { missionId: "miss2", title: "Historic Granada", cityId: 0, routeId: "historic", completedAt: "2025-08-05" },
-                { missionId: "miss3", title: "Historic Florence", cityId: 1, routeId: "historic", completedAt: "2025-08-08" },
-            ]
-        },
-        achievements: [
-            {id: "ach1", name: "Explorer", description: "Visit 10 monuments in a city", unlockedAt: "2025-08-05"},
-            {id: "ach2", name: "Traveller", description: "Visit monuments in 3 different cities", unlockedAt: "2025-08-08"},
-        ],
-        trivials: { total: 2, averageScore: 85 },
-        totalPlayTimeMinutes: 540
-    };
-}
-
-export function groupMonumentsByCity(monuments: MonumentDiscovery[]): MonumentsByCity[] {
-    const cityMap = new Map<number, string>();
-    const map = new Map<number, MonumentDiscovery[]>();
-
-    monuments.forEach(m => {
-        const cityId = m.cityId;
-        if (!map.has(cityId)) {
-            map.set(cityId, []);
-            cityMap.set(cityId, m.cityName);
+            PK: `CITY#${cityId}`,
+            SK: "LEVEL#2",
+            entityType: "Level",
+            levelId: "2",
+            cityId,
+            difficulty: "medium",
+            color: "#C0C0C0",
+            GSI1PK: "DIFFICULTY#medium",
+            GSI1SK: `CITY#${cityId}#LEVEL#2`
         }
-        map.get(cityId)!.push(m);
-    });
+    ];
+};
 
-    return Array.from(map.entries()).map(([cityId, monuments]) => ({
-        cityId,
-        cityName: cityMap.get(cityId) || "Unknown",
-        monuments
-    }));
-}
+export const fetchRoutes = (cityId: string): Route[] => {
+    return [
+        {
+            PK: `CITY#${cityId}`,
+            SK: "ROUTE#FLORENCE_LEGENDS",
+            entityType: "Route",
+            routeId: "FLORENCE_LEGENDS",
+            cityId,
+            cityName: "Florence",
+            title: "Legends of Florence",
+            description: "Discover myths and legends hidden in Florence.",
+            theme: "Legends",
+            difficulty: "Intermediate",
+            estimatedDurationMinutes: 120,
+            monumentIds: ["201", "202", "203"],
+            createdAt: "2025-08-01T10:00:00Z",
+            GSI1PK: "ROUTE#FLORENCE_LEGENDS",
+            GSI1SK: `CITY#${cityId}`,
+            GSI2PK: "THEME#Legends",
+            GSI2SK: "ROUTE#FLORENCE_LEGENDS",
+            GSI3PK: "DIFFICULTY#Intermediate",
+            GSI3SK: `CITY#${cityId}#ROUTE#FLORENCE_LEGENDS`
+        }
+    ];
+};
 
-export const fetchAllActivePlaces = (): City[] => [
-    { name: "Granada", coords: { latitude: 37.109673, longitude: -3.590427 }, cityId: 0, PK: "", SK: "", entityType: "City", country: "", imageUrl: "" },
-    { name: "Florence", coords: { latitude: 43.7800127, longitude: 11.1997685 }, cityId: 1, PK: "", SK: "", entityType: "City", country: "", imageUrl: "" }
-];
+export const fetchMonuments = (routeId: string): Monument[] => {
+    return [
+        {
+            PK: `ROUTE#${routeId}`,
+            SK: "MONUMENT#201",
+            entityType: "Monument",
+            monumentId: "201",
+            routeId,
+            cityId: "1",
+            name: "Ponte Vecchio",
+            description: "Historic bridge over the Arno river.",
+            coords: { latitude: 43.7679, longitude: 11.2536 },
+            imageUrl: "https://example.com/ponte_vecchio.jpg",
+            GSI1PK: "MONUMENT#201",
+            GSI1SK: "CITY#1"
+        },
+        {
+            PK: `ROUTE#${routeId}`,
+            SK: "MONUMENT#202",
+            entityType: "Monument",
+            monumentId: "202",
+            routeId,
+            cityId: "1",
+            name: "Santa Maria del Fiore",
+            description: "Florence's famous cathedral.",
+            coords: { latitude: 43.7731, longitude: 11.2560 },
+            imageUrl: "https://example.com/santa_maria.jpg",
+            GSI1PK: "MONUMENT#202",
+            GSI1SK: "CITY#1"
+        }
+    ];
+};
 
-export function fetchCityObjectivesExample(): Map<number, CityObjectives> {
-    const playerStats: PlayerStats = fetchPlayerStats();
-    const cities = fetchCitiesVisitedByUser();
-    const monumentsDiscovered: MonumentDiscovery[] = fetchPlacesByCityVisitedByUser().monuments;
-    const missions: CompletedMission[] = playerStats.missions.list;
-    const allMonuments: Monument[] = fetchTempData();
+export const fetchMonumentsByCity = (cityId: string): Monument[] => {
+    if (cityId !== "1") return []; // Solo Florencia en este mock
 
-    const monumentsByCity: Record<number, MonumentDiscovery[]> = {};
-    monumentsDiscovered.forEach(m => {
-        if (!monumentsByCity[m.cityId]) monumentsByCity[m.cityId] = [];
-        monumentsByCity[m.cityId].push(m);
-    });
+    return [
+        {
+            PK: "ROUTE#FLORENCE_LEGENDS",
+            SK: "MONUMENT#PONTE_VECCHIO",
+            entityType: "Monument",
+            monumentId: "PONTE_VECCHIO",
+            routeId: "FLORENCE_LEGENDS",
+            cityId: "1",
+            name: "Ponte Vecchio",
+            description: "The famous medieval bridge over the Arno River.",
+            coords: { latitude: 43.7678, longitude: 11.2532 } as LatLng,
+            imageUrl: "https://example.com/images/ponte_vecchio.jpg",
+            clue: "Look for the shops along the bridge.",
+            GSI1PK: "MONUMENT#PONTE_VECCHIO",
+            GSI1SK: "CITY#1",
+        },
+        {
+            PK: "ROUTE#FLORENCE_LEGENDS",
+            SK: "MONUMENT#SANTA_MARIA_DEL_FIORE",
+            entityType: "Monument",
+            monumentId: "SANTA_MARIA_DEL_FIORE",
+            routeId: "FLORENCE_LEGENDS",
+            cityId: "1",
+            name: "Santa Maria del Fiore",
+            description: "Florence's cathedral with the iconic dome by Brunelleschi.",
+            coords: { latitude: 43.7731, longitude: 11.2560 } as LatLng,
+            imageUrl: "https://example.com/images/santa_maria_del_fiore.jpg",
+            clue: "Check out the impressive dome from outside.",
+            GSI1PK: "MONUMENT#SANTA_MARIA_DEL_FIORE",
+            GSI1SK: "CITY#1",
+        },
+        {
+            PK: "ROUTE#FLORENCE_LEGENDS",
+            SK: "MONUMENT#PALAZZO_VECCHIO",
+            entityType: "Monument",
+            monumentId: "PALAZZO_VECCHIO",
+            routeId: "FLORENCE_LEGENDS",
+            cityId: "1",
+            name: "Palazzo Vecchio",
+            description: "The historic town hall of Florence, overlooking Piazza della Signoria.",
+            coords: { latitude: 43.7692, longitude: 11.2558 } as LatLng,
+            imageUrl: "https://example.com/images/palazzo_vecchio.jpg",
+            clue: "Find the massive tower and statue outside.",
+            GSI1PK: "MONUMENT#PALAZZO_VECCHIO",
+            GSI1SK: "CITY#1",
+        },
+    ];
+};
 
-    const missionsByCity: Record<number, CompletedMission[]> = {};
-    missions.forEach(m => {
-        if (!missionsByCity[m.cityId]) missionsByCity[m.cityId] = [];
-        missionsByCity[m.cityId].push(m);
-    });
 
-    const allMonumentsByCity: Record<number, Monument[]> = {};
-    allMonuments.forEach(m => {
-        const cityId = Number(m.GSI3PK?.split("#")[1] ?? -1);
-        if (cityId < 0) return;
-        if (!allMonumentsByCity[cityId]) allMonumentsByCity[cityId] = [];
-        allMonumentsByCity[cityId].push(m);
-    });
+// ================== MISSIONS & ACHIEVEMENTS ==================
 
-    const cityObjectivesMap = new Map<number, CityObjectives>();
-    cities.forEach(city => {
-        cityObjectivesMap.set(city.cityId, {
-            cityId: city.cityId,
-            cityName: city.name,
-            monumentsDiscovered: monumentsByCity[city.cityId] || [],
-            allMonuments: allMonumentsByCity[city.cityId] || [],
-            missionsCompleted: missionsByCity[city.cityId] || [],
-            trivials: []
-        });
-    });
+export const fetchMissions = (routeId: string): Mission[] => {
+    return [
+        {
+            PK: `ROUTE#${routeId}`,
+            SK: "MISSION#1",
+            missionId: "1",
+            routeId,
+            cityId: "1",
+            cityName: "Florence",
+            title: "Discover the Old City",
+            description: "Find key monuments in Florence.",
+            activities: [
+                { type: "DISCOVER_MONUMENTS", target: 3, monumentIds: ["201", "202", "203"] }
+            ],
+            reward: { xp: 100, points: 50 },
+            GSI1PK: "MISSION#1",
+            GSI1SK: `ROUTE#${routeId}`
+        }
+    ];
+};
 
-    return cityObjectivesMap;
-}
+export const fetchAchievements = (): Achievement[] => {
+    return [
+        {
+            PK: "ACHIEVEMENT",
+            SK: "ACHIEVEMENT#DISCOVERER",
+            entityType: "Achievement",
+            achievementId: "DISCOVERER",
+            name: "Master Discoverer",
+            description: "Complete all missions in Florence.",
+            pointsReward: 200,
+            createdAt: "2025-08-01T12:00:00Z",
+            GSI1PK: "ACHIEVEMENT#GLOBAL",
+            GSI1SK: "CREATED_AT#2025-08-01T12:00:00Z"
+        }
+    ];
+};
+
+// ================== USER DATA ==================
+
+export const fetchUserProfile = (userId: string): UserProfile => {
+    return {
+        PK: `USER#${userId}`,
+        SK: "PROFILE",
+        entityType: "UserProfile",
+        userId,
+        username: "FlorenceFan",
+        xp: 1500,
+        level: "Intermediate",
+        totalPlayTimeMinutes: 240,
+        createdAt: "2025-08-01T09:00:00Z",
+        GSI1PK: "EMAIL#florencefan@example.com",
+        GSI1SK: `USER#${userId}`,
+        GSI2PK: "USER_RANKING",
+        GSI2SK: `XP#1500`
+    };
+};
+
+export const fetchUserMonumentDiscoveries = (userId: string): UserMonumentDiscovery[] => {
+    return [
+        {
+            PK: `USER#${userId}`,
+            SK: "MONUMENT#201",
+            entityType: "UserMonumentDiscovery",
+            userId,
+            monumentId: "201",
+            monumentName: "Ponte Vecchio",
+            cityId: "1",
+            cityName: "Florence",
+            routeId: "FLORENCE_LEGENDS",
+            discoveredAt: "2025-08-10T10:00:00Z",
+            pointsEarned: 20,
+            GSI1PK: "MONUMENT#201",
+            GSI1SK: `USER#${userId}`,
+            GSI3PK: `USER#${userId}`,
+            GSI3SK: "DISCOVERY_DATE#2025-08-10T10:00:00Z"
+        }
+    ];
+};
+// ================== USER DATA ==================
+
+export const fetchUserMissionProgress = (userId: string): UserMissionProgress[] => {
+    return [
+        {
+            PK: `USER#${userId}`,
+            SK: "MISSION#1",
+            entityType: "UserMissionProgress",
+            userId,
+            missionId: "1",
+            routeId: "FLORENCE_LEGENDS",
+            cityId: "1",
+            status: "IN_PROGRESS",
+            progress: [
+                {
+                    activityType: "DISCOVER_MONUMENTS",
+                    current: 2,
+                    target: 3,
+                    monumentIdsCompleted: ["201", "202"]
+                }
+            ],
+            lastUpdated: "2025-08-11T12:00:00Z",
+            GSI1PK: "MISSION#1",
+            GSI1SK: `USER#${userId}`,
+            GSI2PK: `USER#${userId}`,
+            GSI2SK: "MISSION_STATUS#IN_PROGRESS"
+        }
+    ];
+};
+
+export const fetchUserAchievements = (userId: string): UserAchievement[] => {
+    return [
+        {
+            PK: `USER#${userId}`,
+            SK: "ACHIEVEMENT#DISCOVERER",
+            entityType: "UserAchievement",
+            userId,
+            achievementId: "DISCOVERER",
+            achievedAt: "2025-08-12T09:00:00Z",
+            pointsEarned: 200,
+            GSI1PK: "ACHIEVEMENT#DISCOVERER",
+            GSI1SK: `USER#${userId}`
+        }
+    ];
+};
+
+export const fetchUserTrivials = (userId: string): UserTrivial[] => {
+    return [
+        {
+            PK: `USER#${userId}`,
+            SK: "TRIVIAL#1",
+            entityType: "UserTrivial",
+            userId,
+            trivialId: "1",
+            level: "medium",
+            score: 8,
+            completedAt: "2025-08-10T15:00:00Z",
+            GSI1PK: `USER#${userId}`,
+            GSI1SK: "TRIVIAL_DATE#2025-08-10T15:00:00Z",
+            GSI2PK: "TRIVIAL#1",
+            GSI2SK: `USER#${userId}`
+        }
+    ];
+};
+
+// ================== STATS / SUMMARIES ==================
+
+export const fetchMonumentsByCitySummary = (userId: string): MonumentsByCitySummary[] => {
+    return [
+        {
+            PK: `USER#${userId}`,
+            SK: "CITY_SUMMARY#1",
+            cityId: "1",
+            cityName: "Florence",
+            monumentsCount: 5,
+            recentMonuments: [
+                {
+                    monumentId: "201",
+                    name: "Ponte Vecchio",
+                    cityId: "1",
+                    cityName: "Florence",
+                    discoveredAt: "2025-08-10T10:00:00Z"
+                },
+                {
+                    monumentId: "202",
+                    name: "Santa Maria del Fiore",
+                    cityId: "1",
+                    cityName: "Florence",
+                    discoveredAt: "2025-08-10T11:00:00Z"
+                }
+            ]
+        }
+    ];
+};
+
+export const fetchUserStatsSummary = (userId: string): UserStatsSummaryTable => {
+    return {
+        PK: `USER#${userId}`,
+        SK: "STATS_SUMMARY",
+        userId,
+        totalPoints: 550,
+        level: "Intermediate",
+        totalPlayTimeMinutes: 240,
+        lastActiveAt: "2025-08-12T12:00:00Z",
+        monumentsCount: 5,
+        missionsCount: 3,
+        achievementsCount: 2,
+        trivials: { total: 3, averageScore: 7.5 },
+        recentAchievements: [
+            {
+                achievementId: "DISCOVERER",
+                title: "Master Discoverer",
+                description: "Complete all missions in Florence.",
+                achievedAt: "2025-08-12T09:00:00Z"
+            }
+        ],
+        recentMonuments: fetchMonumentsByCitySummary(userId),
+        GSI1PK: "GLOBAL_RANKING",
+        GSI1SK: "POINTS#550"
+    };
+};
