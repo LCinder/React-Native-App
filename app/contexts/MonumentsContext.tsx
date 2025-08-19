@@ -8,8 +8,8 @@ import React, {
     useMemo,
 } from "react";
 import { City, Monument } from "@/types/types";
-import { SelectedItemContext } from "@/app/SelectedItemProvider";
-import { fetchTempDataMonumentsByZoneId } from "@/utils/Helper";
+import { SelectedItemContext } from "@/app/contexts/SelectedItemContext";
+import { fetchMonumentsByCity } from "@/utils/Helper";
 
 type MonumentsContextType = {
     monuments: Monument[];
@@ -46,7 +46,7 @@ export const MonumentProvider = ({ children }: { children: ReactNode }) => {
             setError(null);
             setSelectedItem(null);
             try {
-                const data = fetchTempDataMonumentsByZoneId(zoneId);
+                const data = fetchMonumentsByCity(zoneId);
                 setMonuments(data);
             } catch (err) {
                 setError("Error loading monuments");

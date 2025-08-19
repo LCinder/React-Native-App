@@ -7,7 +7,7 @@ import {useRoute} from "@react-navigation/native";
 import {MAPBOX_ACCESS_TOKEN} from '@env';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
+MapboxGL.setAccessToken("pk.eyJ1IjoibGNpbmRlciIsImEiOiJjbWUxZGRvZHkwaW94Mmtxeng4aGd3ZmFmIn0.gDWvM2g0GcSCIZnH3BlnDg");
 
 export default function Map() {
     const [location, setLocation] = useState(null);

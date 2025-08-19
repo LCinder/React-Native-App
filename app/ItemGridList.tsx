@@ -14,7 +14,7 @@ export default function ItemGridList({ data, onPress }: Readonly<ContainerListPr
             <FlatList
                 data={data}
                 keyExtractor={(item, index) => item.name}
-                numColumns={2}
+                numColumns={1}
                 renderItem={({ item }) => <Card item={item} onPress={onPress} />}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 100 }}
@@ -25,6 +25,5 @@ export default function ItemGridList({ data, onPress }: Readonly<ContainerListPr
 
 const styles = StyleSheet.create({
     resultContainer: {
-        marginTop: 50
     },
 });

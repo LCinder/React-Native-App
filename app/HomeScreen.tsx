@@ -1,11 +1,11 @@
-import React, {useContext, useEffect} from "react";
-import {Button, Pressable, StyleSheet, Text, View} from "react-native";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {useNavigation} from "@react-navigation/native";
-import {RootStackParamList, Monument} from "@/types/types";
-import {SelectedItemContext} from "@/app/SelectedItemProvider";
-import {useMonuments} from "@/app/MonumentsContext";
-import {SelectedLevelContext} from "@/app/SelectedLevelContext";
+import React, { useContext } from "react";
+import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList, Monument } from "@/types/types";
+import { SelectedItemContext } from "@/app/contexts/SelectedItemContext";
+import { useMonuments } from "@/app/contexts/MonumentsContext";
+import { SelectedLevelContext } from "@/app/contexts/SelectedLevelContext";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 
@@ -33,7 +33,6 @@ export default function HomeScreen() {
                 <Button title={"Change Zone"} onPress={changeZone}/>
             </View>
             <View style={styles.container}>
-                <Text>{selectedLevel?.difficulty}</Text>
 
                 {monuments.map(t => {
                     let styleSelectedItem = {}

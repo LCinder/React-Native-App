@@ -49,12 +49,12 @@ export type Route = {
 
     createdAt: string;        // ISO 8601
 
-    GSI1PK: `ROUTE#${string}`;
-    GSI1SK: `CITY#${string}`;
-    GSI2PK: `THEME#${string}`;
-    GSI2SK: `ROUTE#${string}`;
-    GSI3PK: `DIFFICULTY#${string}`;
-    GSI3SK: `CITY#${string}#ROUTE#${string}`;
+    GSI1PK?: `ROUTE#${string}`;
+    GSI1SK?: `CITY#${string}`;
+    GSI2PK?: `THEME#${string}`;
+    GSI2SK?: `ROUTE#${string}`;
+    GSI3PK?: `DIFFICULTY#${string}`;
+    GSI3SK?: `CITY#${string}#ROUTE#${string}`;
 };
 
 export type Monument = {
@@ -73,6 +73,8 @@ export type Monument = {
 
     GSI1PK: `MONUMENT#${string}`;
     GSI1SK: `CITY#${string}`;
+    GSI2PK?: `CITY#${string}`;
+    GSI2SK?: `MONUMENT#${string}`;
 };
 
 // ================== MISSIONS & ACHIEVEMENTS ==================
@@ -80,8 +82,6 @@ type MissionActivity =
     | { type: "DISCOVER_MONUMENTS"; target: number; monumentIds: string[] }
     | { type: "FIND_OBJECTS"; target: number }
     | { type: "TRIVIA"; target: number; questions?: string[] };
-
-
 
 export type Mission = {
     PK: `ROUTE#${string}`;

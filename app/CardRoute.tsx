@@ -1,18 +1,19 @@
 import React from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {colorPalette} from "@/utils/Helper";
-import {MissionType} from "@/types/types";
+import {Route} from "@/types/types";
 
-type CardMissionTypeProps = {
-    monument: MissionType;
-    onPress: (monument: MissionType) => void;
+type CardRouteTypeProps = {
+    route: Route;
+    onPress: (route: Route) => void;
 };
 
-export function CardMissionType({monument, onPress}: Readonly<CardMissionTypeProps>) {
+export function CardRoute({route, onPress}: Readonly<CardRouteProps>) {
     return (
-        <Pressable style={[styles.container]} onPress={() => onPress(monument)}>
+        <Pressable style={[styles.container]} onPress={() => onPress(route)}>
             <View style={styles.header}>
-                <Text style={styles.title}>{monument.name}</Text>
+                <Text style={styles.title}>{route.title}</Text>
+                <Text style={styles.text}>{route.description}</Text>
             </View>
 
             {/*<View style={styles.imageContainer}>
@@ -24,10 +25,9 @@ export function CardMissionType({monument, onPress}: Readonly<CardMissionTypePro
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1 / 2,
         margin: 25,
         borderRadius: 10,
-        backgroundColor: colorPalette[1]
+        backgroundColor: colorPalette[0]
     },
     header: {
         alignItems: "center",
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
         color: "#fff",
     },
     textContainer: {
-        backgroundColor: "rgba(255,255,255,0.3)",
         padding: 10,
         alignItems: "center",
     },

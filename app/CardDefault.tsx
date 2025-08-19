@@ -2,12 +2,12 @@ import React from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {colorPalette} from "@/utils/Helper";
 
-type CardMissionTypeProps = {
+type CardRouteProps = {
     item: any;
     onPress: (item: any) => void;
 };
 
-export function CardDefault({item, onPress}: Readonly<CardMissionTypeProps>) {
+export function CardDefault({item, onPress}: Readonly<CardRouteProps>) {
     return (
         <Pressable style={[styles.container]} onPress={() => onPress(item)}>
             <View style={styles.header}>

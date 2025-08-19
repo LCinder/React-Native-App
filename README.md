@@ -13,7 +13,14 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 2. Start the app
 
    ```bash
-   npx expo start
+   npx expo start --dev-client
+   ```
+   
+If TCP error: 
+
+   ```bash
+   netstat -ano | findstr 5563
+   taskkill /PID 2128 /F
    ```
 
 3. Create APK

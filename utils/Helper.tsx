@@ -40,6 +40,37 @@ export function findColorByItem(monument: Monument) {
 
 // ================== CORE ENTITIES ==================
 
+export const fetchAllCities = (): City[] => {
+    return [
+        {
+            PK: "CITY#1",
+            SK: "METADATA",
+            entityType: "City",
+            cityId: "1",
+            name: "Florence",
+            country: "Italy",
+            imageUrl: "https://example.com/florence.jpg",
+            coords: { latitude: 43.7696, longitude: 11.2558 },
+
+            GSI1PK: "COUNTRY#Italy",
+            GSI1SK: "CITY#1",
+        },
+        {
+            PK: "CITY#2",
+            SK: "METADATA",
+            entityType: "City",
+            cityId: "2",
+            name: "Granada",
+            country: "Spain",
+            imageUrl: "https://example.com/granada.jpg",
+            coords: { latitude: 37.1773, longitude: -3.5986 },
+
+            GSI1PK: "COUNTRY#Spain",
+            GSI1SK: "CITY#2",
+        },
+    ];
+};
+
 export const fetchCity = (): City => {
     return {
         PK: "CITY#1",
@@ -92,7 +123,7 @@ export const fetchRoutes = (cityId: string): Route[] => {
             cityId,
             cityName: "Florence",
             title: "Legends of Florence",
-            description: "Discover myths and legends hidden in Florence.",
+            description: "Discover myths and legends hidden in Florence",
             theme: "Legends",
             difficulty: "Intermediate",
             estimatedDurationMinutes: 120,
@@ -142,7 +173,7 @@ export const fetchMonuments = (routeId: string): Monument[] => {
 };
 
 export const fetchMonumentsByCity = (cityId: string): Monument[] => {
-    if (cityId !== "1") return []; // Solo Florencia en este mock
+    if (cityId !== "1") return [];
 
     return [
         {
@@ -193,6 +224,35 @@ export const fetchMonumentsByCity = (cityId: string): Monument[] => {
     ];
 };
 
+export const fetchCitiesVisitedByUser = (userId: string): City[] => {
+    return [
+        {
+            PK: "CITY#1",
+            SK: "METADATA",
+            entityType: "City",
+            cityId: "1",
+            name: "Florence",
+            country: "Italy",
+            imageUrl: "https://example.com/florence.jpg",
+            coords: { latitude: 43.7696, longitude: 11.2558 },
+            GSI1PK: "COUNTRY#Italy",
+            GSI1SK: "CITY#1"
+        },
+        {
+            PK: "CITY#2",
+            SK: "METADATA",
+            entityType: "City",
+            cityId: "2",
+            name: "Granada",
+            country: "Spain",
+            imageUrl: "https://example.com/granada.jpg",
+            coords: { latitude: 37.1773, longitude: -3.5986 },
+            GSI1PK: "COUNTRY#Spain",
+            GSI1SK: "CITY#2"
+        }
+    ];
+};
+
 
 // ================== MISSIONS & ACHIEVEMENTS ==================
 
@@ -206,7 +266,7 @@ export const fetchMissions = (routeId: string): Mission[] => {
             cityId: "1",
             cityName: "Florence",
             title: "Discover the Old City",
-            description: "Find key monuments in Florence.",
+            description: "Find key monuments in Florence",
             activities: [
                 { type: "DISCOVER_MONUMENTS", target: 3, monumentIds: ["201", "202", "203"] }
             ],

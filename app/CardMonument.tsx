@@ -1,7 +1,7 @@
 import React from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {colorPalette, findColorByItem, ITEM_TEMPLATE} from "@/utils/Helper";
-import {RemoteSVG} from "@/app/RemoteSVG";
+import {RemoteSVG} from "@/utils/RemoteSVG";
 import {Monument} from "@/types/types";
 
 type CardMonumentProps = {
@@ -10,9 +10,9 @@ type CardMonumentProps = {
 };
 
 export function CardMonument({monument: originalItem, onPress}: Readonly<CardMonumentProps>) {
-    const itemToRender: Monument = originalItem.registered
-        ? originalItem
-        : {...ITEM_TEMPLATE, imageUrl: originalItem.imageUrl};
+    const itemToRender: Monument = originalItem
+        //? originalItem
+        //: {...ITEM_TEMPLATE, imageUrl: originalItem.imageUrl};
 
     const color = findColorByItem(itemToRender);
 
@@ -35,8 +35,7 @@ export function CardMonument({monument: originalItem, onPress}: Readonly<CardMon
             </View>
 
             <View style={styles.textContainer}>
-                <Text style={styles.text}>{itemToRender.type}</Text>
-                <Text style={styles.text}>{itemToRender.difficulty}</Text>
+                <Text style={styles.text}>{itemToRender.description}</Text>
             </View>
         </Pressable>
     );
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "#fff",
+        fontSize: 17,
     },
     imageContainer: {
         alignItems: "center",

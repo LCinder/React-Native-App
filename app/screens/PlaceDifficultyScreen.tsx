@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Button, FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {CommonActions, useNavigation} from "@react-navigation/native";
-import {fetchAllLevels, findColorByLevel} from "@/utils/Helper";
+import {fetchLevels, findColorByLevel} from "@/utils/Helper";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {Level, RootStackParamList} from "@/types/types";
 import {SelectedLevelContext} from "@/app/SelectedLevelContext";
@@ -13,9 +13,8 @@ export default function PlaceDifficultyScreen() {
     const [allLevels, setAllLevels] = useState<Level[]>([])
     const {setSelectedLevel } = useContext(SelectedLevelContext);
 
-
     useEffect(() => {
-        const levels = fetchAllLevels()
+        const levels = fetchLevels("1")
         setAllLevels(levels)
     }, []);
 
