@@ -51,7 +51,7 @@ export const fetchAllCities = (): City[] => {
             country: "Italy",
             imageUrl: "https://example.com/florence.jpg",
             coords: { latitude: 43.7696, longitude: 11.2558 },
-
+            description: "Florence, cuna del Renacimiento, es famosa por sus obras maestras artísticas y su impresionante arquitectura. Pasear por sus calles es descubrir siglos de historia en cada rincón.",
             GSI1PK: "COUNTRY#Italy",
             GSI1SK: "CITY#1",
         },
@@ -64,12 +64,13 @@ export const fetchAllCities = (): City[] => {
             country: "Spain",
             imageUrl: "https://example.com/granada.jpg",
             coords: { latitude: 37.1773, longitude: -3.5986 },
-
+            description: "Granada combina el legado árabe, judío y cristiano. La Alhambra y el Albaicín hacen de la ciudad un museo vivo de historia, cultura y misterio.",
             GSI1PK: "COUNTRY#Spain",
             GSI1SK: "CITY#2",
         },
     ];
 };
+
 
 export const fetchCity = (): City => {
     return {
@@ -114,62 +115,126 @@ export const fetchLevels = (cityId: string): Level[] => {
 };
 
 export const fetchRoutes = (cityId: string): Route[] => {
-    return [
-        {
-            PK: `CITY#${cityId}`,
-            SK: "ROUTE#FLORENCE_LEGENDS",
-            entityType: "Route",
-            routeId: "FLORENCE_LEGENDS",
-            cityId,
-            cityName: "Florence",
-            title: "Legends of Florence",
-            description: "Discover myths and legends hidden in Florence",
-            theme: "Legends",
-            difficulty: "Intermediate",
-            estimatedDurationMinutes: 120,
-            monumentIds: ["201", "202", "203"],
-            createdAt: "2025-08-01T10:00:00Z",
-            GSI1PK: "ROUTE#FLORENCE_LEGENDS",
-            GSI1SK: `CITY#${cityId}`,
-            GSI2PK: "THEME#Legends",
-            GSI2SK: "ROUTE#FLORENCE_LEGENDS",
-            GSI3PK: "DIFFICULTY#Intermediate",
-            GSI3SK: `CITY#${cityId}#ROUTE#FLORENCE_LEGENDS`
-        }
-    ];
+  if (cityId !== "1") return [];
+
+  return [
+    {
+      PK: "CITY#1",
+      SK: "ROUTE#FLORENCE_LEGENDS",
+      entityType: "Route",
+      routeId: "FLORENCE_LEGENDS",
+      cityId: "1",
+      title: "Florencia de Leyendas",
+      description:
+        "Un viaje al lado más oscuro y enigmático de la ciudad. Historias de traiciones, pactos secretos y símbolos escondidos en sus monumentos.",
+      theme: "Legends",
+      difficulty: "Medium",
+      estimatedDuration: "1h 30m",
+      xpReward: 300,
+      imageUrl: "https://cdn.miaplicacion.com/images/routes/florence_legends.jpg",
+      monuments: ["PONTE_VECCHIO", "SANTA_MARIA_DEL_FIORE", "PALAZZO_VECCHIO"],
+      GSI1PK: "ROUTE#FLORENCE_LEGENDS",
+      GSI1SK: "CITY#1"
+    },
+    {
+      PK: "CITY#1",
+      SK: "ROUTE#FLORENCE_ART",
+      entityType: "Route",
+      routeId: "FLORENCE_ART",
+      cityId: "1",
+      title: "Florencia del Arte",
+      description:
+        "El Renacimiento en estado puro: descubre los lugares donde nacieron las obras maestras que cambiaron el mundo.",
+      theme: "Art",
+      difficulty: "Easy",
+      estimatedDuration: "1h",
+      xpReward: 200,
+      imageUrl: "https://cdn.miaplicacion.com/images/routes/florence_art.jpg",
+      monuments: ["SANTA_MARIA_DEL_FIORE", "PALAZZO_VECCHIO"],
+      GSI1PK: "ROUTE#FLORENCE_ART",
+      GSI1SK: "CITY#1"
+    },
+    {
+      PK: "CITY#1",
+      SK: "ROUTE#FLORENCE_POWER",
+      entityType: "Route",
+      routeId: "FLORENCE_POWER",
+      cityId: "1",
+      title: "El Poder de Florencia",
+      description:
+        "Sigue los pasos del poder político y económico que convirtió a Florencia en el corazón de Europa.",
+      theme: "History",
+      difficulty: "Hard",
+      estimatedDuration: "2h",
+      xpReward: 400,
+      imageUrl: "https://cdn.miaplicacion.com/images/routes/florence_power.jpg",
+      monuments: ["PALAZZO_VECCHIO", "PONTE_VECCHIO"],
+      GSI1PK: "ROUTE#FLORENCE_POWER",
+      GSI1SK: "CITY#1"
+    }
+  ];
 };
 
 export const fetchMonuments = (routeId: string): Monument[] => {
     return [
-        {
-            PK: `ROUTE#${routeId}`,
-            SK: "MONUMENT#201",
-            entityType: "Monument",
-            monumentId: "201",
-            routeId,
-            cityId: "1",
-            name: "Ponte Vecchio",
-            description: "Historic bridge over the Arno river.",
-            coords: { latitude: 43.7679, longitude: 11.2536 },
-            imageUrl: "https://example.com/ponte_vecchio.jpg",
-            GSI1PK: "MONUMENT#201",
-            GSI1SK: "CITY#1"
-        },
-        {
-            PK: `ROUTE#${routeId}`,
-            SK: "MONUMENT#202",
-            entityType: "Monument",
-            monumentId: "202",
-            routeId,
-            cityId: "1",
-            name: "Santa Maria del Fiore",
-            description: "Florence's famous cathedral.",
-            coords: { latitude: 43.7731, longitude: 11.2560 },
-            imageUrl: "https://example.com/santa_maria.jpg",
-            GSI1PK: "MONUMENT#202",
-            GSI1SK: "CITY#1"
-        }
-    ];
+            {
+                PK: "ROUTE#FLORENCE_LEGENDS",
+                SK: "MONUMENT#PONTE_VECCHIO",
+                entityType: "Monument",
+                monumentId: "PONTE_VECCHIO",
+                routeId: "FLORENCE_LEGENDS",
+                cityId: "1",
+                name: "Ponte Vecchio",
+                description: "El puente más antiguo de Florencia, símbolo de la ciudad y hogar de orfebres y joyeros desde el siglo XVI. Su estructura medieval sobrevivió a guerras y desastres naturales.",
+                coords: { latitude: 43.7678, longitude: 11.2532 } as LatLng,
+                imageUrl: "https://example.com/images/ponte_vecchio.jpg",
+                clue: "Busca el corredor superior: allí paseaban los Medici para cruzar la ciudad sin mezclarse con la multitud.",
+                legend: "Se dice que los carniceros fueron expulsados del puente porque el olor a carne podrida incomodaba a la nobleza. Desde entonces, el oro sustituyó a la sangre.",
+                trivia: "Durante la Segunda Guerra Mundial fue el único puente de Florencia que no destruyeron los nazis.",
+                difficulty: "Easy",
+                discoveryXP: 50,
+                GSI1PK: "MONUMENT#PONTE_VECCHIO",
+                GSI1SK: "CITY#1",
+            },
+            {
+                PK: "ROUTE#FLORENCE_LEGENDS",
+                SK: "MONUMENT#SANTA_MARIA_DEL_FIORE",
+                entityType: "Monument",
+                monumentId: "SANTA_MARIA_DEL_FIORE",
+                routeId: "FLORENCE_LEGENDS",
+                cityId: "1",
+                name: "Santa Maria del Fiore",
+                description: "La catedral de Florencia, con su icónica cúpula de Brunelleschi, fue un desafío arquitectónico que cambió la historia de la ingeniería.",
+                coords: { latitude: 43.7731, longitude: 11.2560 } as LatLng,
+                imageUrl: "https://example.com/images/santa_maria_del_fiore.jpg",
+                clue: "Fíjate en el mosaico del sol dorado en la fachada, ahí empieza tu misión.",
+                legend: "Cuenta la historia que Brunelleschi retó a los rivales a poner un huevo en pie. Al romper la base y hacerlo sostenerse, convenció al jurado de que también sabría 'romper las reglas' para levantar la cúpula.",
+                trivia: "La cúpula sigue siendo la mayor del mundo construida en ladrillo.",
+                difficulty: "Medium",
+                discoveryXP: 100,
+                GSI1PK: "MONUMENT#SANTA_MARIA_DEL_FIORE",
+                GSI1SK: "CITY#1",
+            },
+            {
+                PK: "ROUTE#FLORENCE_LEGENDS",
+                SK: "MONUMENT#PALAZZO_VECCHIO",
+                entityType: "Monument",
+                monumentId: "PALAZZO_VECCHIO",
+                routeId: "FLORENCE_LEGENDS",
+                cityId: "1",
+                name: "Palazzo Vecchio",
+                description: "Antigua sede del poder en Florencia, fortaleza medieval que custodia secretos políticos y artísticos.",
+                coords: { latitude: 43.7692, longitude: 11.2558 } as LatLng,
+                imageUrl: "https://example.com/images/palazzo_vecchio.jpg",
+                clue: "Busca la copia del David en la entrada, ese es tu punto de partida.",
+                legend: "Las mazmorras bajo el palacio guardan las huellas de conspiraciones, juicios y traiciones que marcaron la historia de Florencia.",
+                trivia: "El 'Salone dei Cinquecento' dentro del palacio inspiró a Dan Brown para su novela *Inferno*.",
+                difficulty: "Hard",
+                discoveryXP: 150,
+                GSI1PK: "MONUMENT#PALAZZO_VECCHIO",
+                GSI1SK: "CITY#1",
+            },
+        ];
 };
 
 export const fetchMonumentsByCity = (cityId: string): Monument[] => {
@@ -184,10 +249,11 @@ export const fetchMonumentsByCity = (cityId: string): Monument[] => {
             routeId: "FLORENCE_LEGENDS",
             cityId: "1",
             name: "Ponte Vecchio",
-            description: "The famous medieval bridge over the Arno River.",
+            description: "El puente más antiguo de Florencia, famoso por sus joyerías suspendidas sobre el río Arno. Durante siglos, fue símbolo de prosperidad y centro de comercio.",
             coords: { latitude: 43.7678, longitude: 11.2532 } as LatLng,
             imageUrl: "https://example.com/images/ponte_vecchio.jpg",
-            clue: "Look for the shops along the bridge.",
+            clue: "Busca los escaparates de joyas y escucha las historias de los orfebres.",
+            legend: "Se dice que los Medici ordenaron cerrar el paso de carnicerías aquí porque el mal olor molestaba a la familia.",
             GSI1PK: "MONUMENT#PONTE_VECCHIO",
             GSI1SK: "CITY#1",
         },
@@ -199,10 +265,11 @@ export const fetchMonumentsByCity = (cityId: string): Monument[] => {
             routeId: "FLORENCE_LEGENDS",
             cityId: "1",
             name: "Santa Maria del Fiore",
-            description: "Florence's cathedral with the iconic dome by Brunelleschi.",
+            description: "La catedral de Florencia, con su icónica cúpula diseñada por Brunelleschi, es uno de los mayores logros arquitectónicos del Renacimiento.",
             coords: { latitude: 43.7731, longitude: 11.2560 } as LatLng,
             imageUrl: "https://example.com/images/santa_maria_del_fiore.jpg",
-            clue: "Check out the impressive dome from outside.",
+            clue: "Admira la cúpula desde la Piazza del Duomo, busca el sol dorado en el mosaico.",
+            legend: "Se cuenta que Brunelleschi ganó el concurso para construir la cúpula gracias a su ingeniosa prueba del huevo.",
             GSI1PK: "MONUMENT#SANTA_MARIA_DEL_FIORE",
             GSI1SK: "CITY#1",
         },
@@ -214,15 +281,17 @@ export const fetchMonumentsByCity = (cityId: string): Monument[] => {
             routeId: "FLORENCE_LEGENDS",
             cityId: "1",
             name: "Palazzo Vecchio",
-            description: "The historic town hall of Florence, overlooking Piazza della Signoria.",
+            description: "El ayuntamiento de Florencia, fortificado como un castillo medieval, fue sede del poder político de la ciudad durante siglos.",
             coords: { latitude: 43.7692, longitude: 11.2558 } as LatLng,
             imageUrl: "https://example.com/images/palazzo_vecchio.jpg",
-            clue: "Find the massive tower and statue outside.",
+            clue: "Encuentra la torre de Arnolfo y observa el David en la entrada.",
+            legend: "Las mazmorras del Palazzo Vecchio fueron testigo de intrigas, traiciones y juicios de la Florencia renacentista.",
             GSI1PK: "MONUMENT#PALAZZO_VECCHIO",
             GSI1SK: "CITY#1",
         },
     ];
 };
+
 
 export const fetchCitiesVisitedByUser = (userId: string): City[] => {
     return [

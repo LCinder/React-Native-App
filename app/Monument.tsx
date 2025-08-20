@@ -80,7 +80,6 @@ export default function Monument() {
                     );
                 }}/>
 
-
                 <View style={styles.titleContainer}>
 
                     <Animated.View
@@ -127,25 +126,23 @@ export default function Monument() {
                     </View>
 
                     <Text style={styles.paragraph}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
+                        {monument.description}
+                    </Text>
 
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel
-                        tincidunt nulla. Vivamus id nisl nec nulla feugiat sagittis...
+                    <Text style={styles.title}>
+                       Legend
+                    </Text>
+
+                    <Text style={styles.paragraph}>
+                        {monument.legend}
+                    </Text>
+
+                    <Text style={styles.title}>
+                       Curiosities
+                    </Text>
+
+                    <Text style={styles.paragraph}>
+                        {monument.trivia}
                     </Text>
                 </View>
             </Animated.ScrollView>
@@ -181,7 +178,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 30,
-        color: "white",
         fontWeight: "bold",
     },
     content: {
