@@ -13,6 +13,10 @@ export type City = {
     imageUrl: string;
     coords: LatLng;
 
+    createdAt: string;     // ISO 8601
+    updatedAt?: string;    // ISO 8601
+
+    // GSI1: COUNTRY -> Cities
     GSI1PK: `COUNTRY#${string}`;
     GSI1SK: `CITY#${string}`;
 };
@@ -27,8 +31,12 @@ export type Level = {
     difficulty: "basic" | "medium" | "hard";
     color: string;
 
-    GSI1PK: `DIFFICULTY#${string}`;
-    GSI1SK: `CITY#${string}#LEVEL#${string}`;
+    createdAt: string;
+    updatedAt?: string;
+
+    // GSI2: DIFFICULTY ->
+    GSI2PK: `DIFFICULTY#${"basic" | "medium" | "hard"}`;
+    GSI2SK: `CITY#${string}#LEVEL#${string}`;
 };
 
 export type Route = {
@@ -41,19 +49,24 @@ export type Route = {
     cityName: string;
     title: string;
     description: string;
-    theme: string;            // "Legends" | "Adventure" | "History"
+    theme: string; // "Legends" | "Adventure" | "History" | ...
     difficulty: "Beginner" | "Intermediate" | "Advanced";
     estimatedDurationMinutes: number;
 
     monumentIds: string[];
 
-    createdAt: string;        // ISO 8601
+    createdAt: string;    // ISO 8601
+    updatedAt?: string;
 
     GSI1PK?: `ROUTE#${string}`;
     GSI1SK?: `CITY#${string}`;
+
+    // THEME -> Routes
     GSI2PK?: `THEME#${string}`;
     GSI2SK?: `ROUTE#${string}`;
-    GSI3PK?: `DIFFICULTY#${string}`;
+
+    // DIFFICULTY -> Routes por ciudad
+    GSI3PK?: `DIFFICULTY#${"Beginner" | "Intermediate" | "Advanced"}`;
     GSI3SK?: `CITY#${string}#ROUTE#${string}`;
 };
 
@@ -71,14 +84,20 @@ export type Monument = {
     imageUrl: string;
     clue?: string;
 
+    createdAt: string;
+    updatedAt?: string;
+
     GSI1PK: `MONUMENT#${string}`;
     GSI1SK: `CITY#${string}`;
+
+    // CITY -> Monuments
     GSI2PK?: `CITY#${string}`;
     GSI2SK?: `MONUMENT#${string}`;
 };
 
 // ================== MISSIONS & ACHIEVEMENTS ==================
-type MissionActivity =
+
+export type MissionActivity =
     | { type: "DISCOVER_MONUMENTS"; target: number; monumentIds: string[] }
     | { type: "FIND_OBJECTS"; target: number }
     | { type: "TRIVIA"; target: number; questions?: string[] };
@@ -87,6 +106,7 @@ export type Mission = {
     PK: `ROUTE#${string}`;
     SK: `MISSION#${string}`;
 
+    entityType: "Mission";
     missionId: string;
     routeId: string;
     cityId: string;
@@ -94,7 +114,6 @@ export type Mission = {
 
     title: string;
     description: string;
-
     activities: MissionActivity[];
 
     reward: {
@@ -102,6 +121,9 @@ export type Mission = {
         xp?: number;
         points?: number;
     };
+
+    createdAt: string;
+    updatedAt?: string;
 
     GSI1PK: `MISSION#${string}`;
     GSI1SK: `ROUTE#${string}`;
@@ -118,6 +140,7 @@ export type Achievement = {
     iconUrl?: string;
     pointsReward: number;
     createdAt: string;
+    updatedAt?: string;
 
     GSI1PK: `ACHIEVEMENT#GLOBAL`;
     GSI1SK: `CREATED_AT#${string}`;
@@ -131,16 +154,20 @@ export type UserProfile = {
 
     entityType: "UserProfile";
     userId: string;
+    email: string;
     username: string;
     xp: number;
     level: string;
     totalPlayTimeMinutes: number;
-    createdAt: string;       // ISO Date
+    createdAt: string;    // ISO
+    updatedAt?: string;
 
+    // Email -> User
     GSI1PK: `EMAIL#${string}`;
     GSI1SK: `USER#${string}`;
+
     GSI2PK: "USER_RANKING";
-    GSI2SK: `XP#${number}`;
+    GSI2SK: `XP#${string}`; // ej: XP#0000012345
 };
 
 export type UserMonumentDiscovery = {
@@ -154,13 +181,18 @@ export type UserMonumentDiscovery = {
     cityId: string;
     cityName: string;
     routeId: string;
-    discoveredAt: string;     // ISO 8601
+    discoveredAt: string;   // ISO 8601
     pointsEarned: number;
-    
+
+    // Monument -> Users
     GSI1PK: `MONUMENT#${string}`;
     GSI1SK: `USER#${string}`;
+
+    // City -> Discoveries
     GSI2PK?: `CITY#${string}`;
     GSI2SK?: `USER#${string}`;
+
+    // User -> Discoveries
     GSI3PK: `USER#${string}`;
     GSI3SK: `DISCOVERY_DATE#${string}`;
 };
@@ -184,13 +216,16 @@ export type UserMissionProgress = {
         monumentIdsCompleted?: string[];
     }[];
 
-    lastUpdated: string;      // ISO 8601
+    lastUpdated: string;    // ISO 8601
     completedAt?: string;
 
+    // Mission -> Users
     GSI1PK: `MISSION#${string}`;
     GSI1SK: `USER#${string}`;
+
+    // User ->
     GSI2PK: `USER#${string}`;
-    GSI2SK: `MISSION_STATUS#${"COMPLETED" | "IN_PROGRESS"}`;
+    GSI2SK: `MISSION_STATUS#${"COMPLETED" | "IN_PROGRESS"}#UPDATED_AT#${string}`;
 };
 
 export type UserAchievement = {
@@ -200,9 +235,10 @@ export type UserAchievement = {
     entityType: "UserAchievement";
     userId: string;
     achievementId: string;
-    achievedAt: string;       // ISO 8601
+    achievedAt: string;    // ISO 8601
     pointsEarned: number;
 
+    // Achievement -> Users
     GSI1PK: `ACHIEVEMENT#${string}`;
     GSI1SK: `USER#${string}`;
 };
@@ -219,8 +255,11 @@ export type UserTrivial = {
     score: number;
     completedAt: string;
 
+    // User -> trivials
     GSI1PK: `USER#${string}`;
     GSI1SK: `TRIVIAL_DATE#${string}`;
+
+    // Trivial -> Users
     GSI2PK: `TRIVIAL#${string}`;
     GSI2SK: `USER#${string}`;
 };
@@ -231,6 +270,8 @@ export type MonumentsByCitySummary = {
     PK: `USER#${string}`;
     SK: `CITY_SUMMARY#${string}`;
 
+    entityType: "MonumentsByCitySummary";
+    userId: string;
     cityId: string;
     cityName: string;
     monumentsCount: number;
@@ -242,17 +283,21 @@ export type MonumentsByCitySummary = {
         cityName: string;
         discoveredAt: string;
     }[];
+
+    createdAt: string;
+    updatedAt?: string;
 };
 
 export type UserStatsSummaryTable = {
     PK: `USER#${string}`;
     SK: "STATS_SUMMARY";
 
+    entityType: "UserStatsSummaryTable";
     userId: string;
     totalPoints: number;
     level: string;
     totalPlayTimeMinutes: number;
-    lastActiveAt: string;     // ISO 8601
+    lastActiveAt: string; // ISO 8601
 
     monumentsCount: number;
     missionsCount: number;
@@ -270,10 +315,19 @@ export type UserStatsSummaryTable = {
         achievedAt: string;
     }[];
 
-    recentMonuments?: MonumentsByCitySummary[];
+    recentMonuments?: {
+        monumentId: string;
+        name: string;
+        cityId: string;
+        cityName: string;
+        discoveredAt: string;
+    }[];
+
+    createdAt: string;
+    updatedAt?: string;
 
     GSI1PK: "GLOBAL_RANKING";
-    GSI1SK: `POINTS#${number}`;
+    GSI1SK: `POINTS#${string}`; // ej: POINTS#0000009876
 };
 
 // ================== FRONTEND NAVIGATION ==================
