@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View, Pressable } from "react-native";
 import {
     fetchUserProfile,
     fetchUserStatsSummary
@@ -8,12 +8,15 @@ import {
 import {useMonuments} from "@/app/contexts/MonumentsContext"
 import { City, UserProfile, UserStatsSummaryTable } from "@/types/types";
 import { SelectedItemContext } from "@/app/contexts/SelectedItemContext";
+import SettingsScreen from "./SettingsScreen";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
-function InfoScreen() {
+export default function ProfileTabs() {
     const [userStatsSummary, setUserStatsSummary] = useState<UserStatsSummaryTable | null>(null);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const { monuments } = useMonuments()
     const { selectedItem } = useContext(SelectedItemContext);
+    const navigation = useNavigation<NavigationProp>();
 
     useEffect(() => {
         const profile = fetchUserProfile("userId");
@@ -27,7 +30,11 @@ function InfoScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>{userProfile?.username}</Text>
+            <Pressable onPress={() => navigation.navigate("settings")}>
+                <View style={{margin: 50} }>
+                    <Text style={styles.title}>{userProfile?.username}</Text>
+                </View>
+            </Pressable>
             <Text style={styles.title}>Total points: {userProfile?.xp}</Text>
 
             <Text>{userProfile?.level}</Text>
@@ -61,20 +68,11 @@ function InfoScreen() {
             {userStatsSummary.recentAchievements?.map((a) => (
                 <Text key={a.achievementId}>🏅 {a.title} - {a.description} - {a.achievedAt}</Text>
             ))}
-
         </ScrollView>
     );
 }
 
-function SettingsScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text>Settings</Text>
-        </View>
-    );
-}
-
-const TopTab = createMaterialTopTabNavigator();
+/*const TopTab = createMaterialTopTabNavigator();
 
 export default function ProfileTabs() {
     return (
@@ -84,7 +82,7 @@ export default function ProfileTabs() {
         </TopTab.Navigator>
     );
 }
-
+*/
 const styles = StyleSheet.create({
     container: {
         margin: 5,
@@ -94,7 +92,9 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         fontSize: 20,
-        marginBottom: 10
+        marginBottom: 10,
+        justifyContent: "center",
+        alignContent: "center"
     },
     section: {
         marginTop: 15,

@@ -7,7 +7,6 @@ import HomeScreen from "./app/HomeScreen";
 import {createNativeStackNavigator, NativeStackNavigationOptions} from "@react-navigation/native-stack";
 import CameraRecognition from "@/utils/CameraRecognition";
 import CitySelectorScreen from "@/app/screens/CitySelectorScreen";
-import PlaceDifficultyScreen from "@/app/screens/PlaceDifficultyScreen";
 import RouteListScreen from '@/app/screens/RouteListScreen';
 import Items from './app/Items';
 import React from 'react';
@@ -19,6 +18,13 @@ import {MonumentProvider} from "@/app/contexts/MonumentsContext";
 import {SelectedLevelProvider} from "@/app/contexts/SelectedLevelContext";
 import Map from "@/app/Map";
 import Monument from "@/app/Monument";
+import SettingsScreen from './app/screens/SettingsScreen';
+import ProfileSettingsScreen from './app/screens/settings/ProfileScreen';
+import CloseSessionScreen from './app/screens/settings/CloseSessionScreen';
+import FAQsScreen from './app/screens/settings/FAQsScreen';
+import LanguageScreen from './app/screens/settings/LanguageScreen';
+import NotificationsScreen from './app/screens/settings/NotificationsScreen';
+import RemoveAccountScreen from './app/screens/settings/RemoveAccountScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,6 +73,13 @@ export default function App() {
                             <Stack.Screen name="camerarecognition" options={options} component={CameraRecognition}/>
                             <Stack.Screen name="items" options={options} component={Items}/>
                             <Stack.Screen name="mission-type" options={options} component={RouteListScreen}/>
+                            <Stack.Screen name="settings" options={options} component={SettingsScreen}/>
+                            <Stack.Screen name="profile_settings" options={options} component={ProfileSettingsScreen}/>
+                            <Stack.Screen name="language" options={options} component={LanguageScreen}/>
+                            <Stack.Screen name="faqs" options={options} component={FAQsScreen}/>
+                            <Stack.Screen name="notifications" options={options} component={NotificationsScreen}/>
+                            <Stack.Screen name="remove_account" options={options} component={RemoveAccountScreen}/>
+                            <Stack.Screen name="close_session" options={options} component={CloseSessionScreen}/>
                         </Stack.Navigator>
                     </NavigationContainer>
                 </SelectedItemProvider>
