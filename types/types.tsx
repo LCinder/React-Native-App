@@ -339,6 +339,6 @@ export type RootStackParamList = {
     "map-all-places": undefined;
     "main-tabs": { screen: string };
     "place-level": { place: { label: string; value: string } };
-    "items": { level: Level; route: Route };
+    "routes": { level: Level; route: Route };
     "monument": { monument: Monument };
 };

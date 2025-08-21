@@ -13,8 +13,7 @@ export default function HomeScreen() {
     const navigation = useNavigation<NavigationProp>();
     const {selectedItem} = useContext(SelectedItemContext);
     const {selectedLevel} = useContext(SelectedLevelContext);
-    const {monuments} = useMonuments();
-
+    const {monuments, currentRoute} = useMonuments();
 
     const changeZone = () => {
         navigation.navigate("map-all-places")

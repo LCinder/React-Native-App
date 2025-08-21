@@ -8,7 +8,7 @@ import {createNativeStackNavigator, NativeStackNavigationOptions} from "@react-n
 import CameraRecognition from "@/utils/CameraRecognition";
 import CitySelectorScreen from "@/app/screens/CitySelectorScreen";
 import RouteListScreen from '@/app/screens/RouteListScreen';
-import Items from './app/Items';
+import RouteScreen from './app/screens/RouteScreen';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ProfileTabs from "@/app/screens/ProfileTabsScreen";
@@ -71,7 +71,7 @@ export default function App() {
                             <Stack.Screen name="map-all-places" options={options} component={CitySelectorScreen}/>
                             <Stack.Screen name="monument" options={options} component={Monument}/>
                             <Stack.Screen name="camerarecognition" options={options} component={CameraRecognition}/>
-                            <Stack.Screen name="items" options={options} component={Items}/>
+                            <Stack.Screen name="routes" options={options} component={RouteScreen}/>
                             <Stack.Screen name="mission-type" options={options} component={RouteListScreen}/>
                             <Stack.Screen name="settings" options={options} component={SettingsScreen}/>
                             <Stack.Screen name="profile_settings" options={options} component={ProfileSettingsScreen}/>

@@ -7,7 +7,7 @@ import React, {
     useState,
     useMemo,
 } from "react";
-import { City, Monument } from "@/types/types";
+import { City, Monument, Route } from "@/types/types";
 import { SelectedItemContext } from "@/app/contexts/SelectedItemContext";
 import { fetchMonumentsByCity } from "@/utils/Helper";
 
@@ -16,7 +16,9 @@ type MonumentsContextType = {
     loading: boolean;
     error: string | null;
     currentCity: City | null;
+    currentRoute: Route | null;
     setCity: (city: City) => void;
+    setRoute: (route: Route) => void;
     completeMonument: (id: number) => void;
     refreshMonument: () => void;
 };
@@ -26,7 +28,9 @@ const MonumentsContext = createContext<MonumentsContextType>({
     loading: false,
     error: null,
     currentCity: null,
+    currentRoute: Route,
     setCity: () => {},
+    setRoute: () => {},
     completeMonument: () => {},
     refreshMonument: () => {},
 });
@@ -38,6 +42,7 @@ export const MonumentProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentCity, setCurrentCity] = useState<City | null>(null);
+    const [currentRoute, setCurrentRoute] = useState<Route | null>(null);
     const { setSelectedItem } = useContext(SelectedItemContext);
 
     const loadMonuments = useCallback(
@@ -83,7 +88,8 @@ export const MonumentProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const refreshMonument = () => {
-        if (currentCity?.cityId) loadMonuments(currentCity.cityId);
+        if (currentCity?.cityId)
+            loadMonuments(currentCity.cityId);
     };
 
     const value = useMemo(
@@ -93,10 +99,12 @@ export const MonumentProvider = ({ children }: { children: ReactNode }) => {
             error,
             currentCity,
             setCity: setCurrentCity,
+            setRoute: setCurrentRoute,
+            currentRoute,
             completeMonument,
             refreshMonument,
         }),
-        [monuments, loading, error, currentCity]
+        [monuments, loading, error, currentCity, currentRoute]
     );
 
     return (

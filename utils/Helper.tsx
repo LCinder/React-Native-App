@@ -176,6 +176,9 @@ export const fetchRoutes = (cityId: string): Route[] => {
 };
 
 export const fetchMonuments = (routeId: string): Monument[] => {
+    if(routeId !== "FLORENCE_ART")
+        return []
+
     return [
             {
                 PK: "ROUTE#FLORENCE_LEGENDS",

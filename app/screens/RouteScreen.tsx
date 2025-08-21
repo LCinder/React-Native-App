@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text, View, Button} from "react-native";
 import {RouteProp, useNavigation, useRoute} from "@react-navigation/native";
 import ItemGridList from "@/app/ItemGridList";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
@@ -7,12 +7,12 @@ import {RootStackParamList, Monument} from "@/types/types";
 import {useMonuments} from "@/app/contexts/MonumentsContext";
 import { fetchMonuments } from "@/utils/Helper";
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "items">;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "routes">;
 
-export default function Items() {
+export default function RouteScreen() {
     const navigation = useNavigation<NavigationProp>();
-    const {route, level} = useRoute<RouteProp<RootStackParamList, "items">>().params;
-    const { monuments } = useMonuments();
+    const { route, level } = useRoute<RouteProp<RootStackParamList, "routes">>().params;
+    const { monuments, currentCity, setRoute } = useMonuments();
     const [monumentsByRoute, setMonumentsByRoute] = useState<Monument[] | null>(null)
 
     useEffect(() => {
@@ -23,6 +23,7 @@ export default function Items() {
         <View style={styles.container}>
             <Text style={styles.title}>{route.title}</Text>
             <Text style={styles.text}>{route.description}</Text>
+            <Button title={"Select"} onPress={() => setRoute(route)}/>
             <ItemGridList
                 data={monumentsByRoute}
                 onPress={(monument: Monument) => navigation.navigate("monument", {monument})}

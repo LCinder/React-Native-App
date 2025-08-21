@@ -18,7 +18,7 @@ export default function RouteListScreen() {
     }, []);
 
     const handlePress = (route: Route) => {
-        navigation.navigate("items", { level, route });
+        navigation.navigate("routes", { level, route });
     };
 
     return (
