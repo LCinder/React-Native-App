@@ -5,16 +5,18 @@ import {
     fetchUserProfile,
     fetchUserStatsSummary
 } from "@/utils/Helper";
-import {useMonuments} from "@/app/contexts/MonumentsContext"
+import {useLocation} from "@/app/contexts/LocationContext"
 import { City, UserProfile, UserStatsSummaryTable } from "@/types/types";
 import { SelectedItemContext } from "@/app/contexts/SelectedItemContext";
 import SettingsScreen from "./SettingsScreen";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {set} from "yaml/dist/schema/yaml-1.1/set";
 
 export default function ProfileTabs() {
     const [userStatsSummary, setUserStatsSummary] = useState<UserStatsSummaryTable | null>(null);
+    const [groupedCities, setGroupedCities] = useState<UserProfile | null>(null);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-    const { monuments } = useMonuments()
+    const { monumentsByCurrentRoute } = useLocation()
     const { selectedItem } = useContext(SelectedItemContext);
     const navigation = useNavigation<NavigationProp>();
 
@@ -24,6 +26,19 @@ export default function ProfileTabs() {
 
         const userStats = fetchUserStatsSummary("userId");
         setUserStatsSummary(userStats)
+
+        const groupedByCity = userStats.recentMonuments?.reduce((acc, monument) => {
+            const { cityId, cityName } = monument;
+
+            if (!acc[cityId]) {
+                acc[cityId] = { cityId, cityName, monuments: [] };
+            }
+
+            acc[cityId]?.monuments?.push(monument);
+            return acc;
+        }, {} as Record<string, { cityId: string; cityName: string; monuments: any }>);
+
+        setGroupedCities(Object.values(groupedByCity));
     }, []);
 
     if (!userStatsSummary) return <Text>Loading...</Text>;
@@ -48,21 +63,22 @@ export default function ProfileTabs() {
             }
 
             <Text style={styles.title}>Current Route</Text>
-            {monuments?.map((m) => (
+            {monumentsByCurrentRoute?.map((m) => (
                 <Text key={m.monumentId}>{m.name} - {m.description}</Text>
             ))}
 
             <Text style={styles.section}>Recent Monuments Visited</Text>
-            {userStatsSummary.recentMonuments?.map((city) => (
+            {groupedCities.map((city) => (
                 <View key={city.cityId} style={styles.cityCard}>
                     <Text style={styles.cityTitle}>{city.cityName}</Text>
-                    {city.recentMonuments?.map((monument) => (
+                    {city.monuments.map((monument) => (
                         <View key={monument.monumentId} style={styles.monumentCard}>
                             <Text>{monument.name}</Text>
                         </View>
                     ))}
                 </View>
             ))}
+
 
             <Text style={styles.section}>Achievements</Text>
             {userStatsSummary.recentAchievements?.map((a) => (

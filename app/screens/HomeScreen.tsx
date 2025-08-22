@@ -4,7 +4,7 @@ import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useNavigation} from "@react-navigation/native";
 import {RootStackParamList, Monument} from "@/types/types";
 import {SelectedItemContext} from "@/app/contexts/SelectedItemContext";
-import {useMonuments} from "@/app/contexts/MonumentsContext";
+import {useLocation} from "@/app/contexts/LocationContext";
 import {SelectedLevelContext} from "@/app/contexts/SelectedLevelContext";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
@@ -13,7 +13,7 @@ export default function HomeScreen() {
     const navigation = useNavigation<NavigationProp>();
     const {selectedItem} = useContext(SelectedItemContext);
     const {selectedLevel} = useContext(SelectedLevelContext);
-    const {monuments, currentRoute} = useMonuments();
+    const {monuments, currentRoute} = useLocation();
 
     const changeZone = () => {
         navigation.navigate("map-all-places")

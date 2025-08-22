@@ -1,30 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import React from "react";
+import {useNavigation} from "@react-navigation/native";
 import ItemGridList from "@/app/ItemGridList";
-import { fetchRoutes } from "@/utils/Helper";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Route, RootStackParamList } from "@/types/types";
-import {StyleSheet, View, Text} from "react-native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {RootStackParamList, Route} from "@/types/types";
+import {StyleSheet, Text, View} from "react-native";
+import {useLocation} from "@/app/contexts/LocationContext";
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "mission-type">;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "routes">;
 
 export default function RouteListScreen() {
-    const [routes, setRoutes] = useState<Route[]>([]);
     const navigation = useNavigation<NavigationProp>();
-    const { level } = 1//useRoute<RouteProp<RootStackParamList, "mission-type">>().params;
-
-    useEffect(() => {
-        setRoutes(fetchRoutes("1"));
-    }, []);
+    const { routes } = useLocation();
 
     const handlePress = (route: Route) => {
-        navigation.navigate("routes", { level, route });
+        navigation.navigate("routes", { route });
     };
 
     return (
         <View>
             <Text style={styles.title}>Routes</Text>
-            <ItemGridList data={routes} onPress={handlePress} />
+            <ItemGridList data={routes} onPress={handlePress}/>
         </View>
     );
 }

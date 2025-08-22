@@ -5,7 +5,7 @@ import {useNavigation} from "@react-navigation/native";
 import { fetchAllCities } from "@/utils/Helper";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {City, RootStackParamList} from "@/types/types";
-import {useMonuments} from "@/app/contexts/MonumentsContext";
+import {useLocation} from "@/app/contexts/LocationContext";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "map-all-places">;
 
@@ -14,7 +14,7 @@ export default function CitySelectorScreen() {
     const [open, setOpen] = useState(false);
     const [cityIdSelected, setCityIdSelected] = useState<number>({});
     const [allActivePlaces, setAllActivePlaces] = useState<City[]>([]);
-    const {setCity} = useMonuments();
+    const {setCity} = useLocation();
 
     useEffect(() => {
         const activePlaces = fetchAllCities();

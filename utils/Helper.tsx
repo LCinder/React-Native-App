@@ -474,34 +474,6 @@ export const fetchUserTrivials = (userId: string): UserTrivial[] => {
 
 // ================== STATS / SUMMARIES ==================
 
-export const fetchMonumentsByCitySummary = (userId: string): MonumentsByCitySummary[] => {
-    return [
-        {
-            PK: `USER#${userId}`,
-            SK: "CITY_SUMMARY#1",
-            cityId: "1",
-            cityName: "Florence",
-            monumentsCount: 5,
-            recentMonuments: [
-                {
-                    monumentId: "201",
-                    name: "Ponte Vecchio",
-                    cityId: "1",
-                    cityName: "Florence",
-                    discoveredAt: "2025-08-10T10:00:00Z"
-                },
-                {
-                    monumentId: "202",
-                    name: "Santa Maria del Fiore",
-                    cityId: "1",
-                    cityName: "Florence",
-                    discoveredAt: "2025-08-10T11:00:00Z"
-                }
-            ]
-        }
-    ];
-};
-
 export const fetchUserStatsSummary = (userId: string): UserStatsSummaryTable => {
     return {
         PK: `USER#${userId}`,
@@ -523,7 +495,22 @@ export const fetchUserStatsSummary = (userId: string): UserStatsSummaryTable => 
                 achievedAt: "2025-08-12T09:00:00Z"
             }
         ],
-        recentMonuments: fetchMonumentsByCitySummary(userId),
+        recentMonuments: [
+            {
+                monumentId: "201",
+                name: "Ponte Vecchio",
+                cityId: "1",
+                cityName: "Florence",
+                discoveredAt: "2025-08-10T10:00:00Z"
+            },
+            {
+                monumentId: "202",
+                name: "Santa Maria del Fiore",
+                cityId: "1",
+                cityName: "Florence",
+                discoveredAt: "2025-08-10T11:00:00Z"
+            }
+        ],
         GSI1PK: "GLOBAL_RANKING",
         GSI1SK: "POINTS#550"
     };

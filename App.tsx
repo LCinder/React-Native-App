@@ -14,7 +14,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ProfileTabs from "@/app/screens/ProfileTabsScreen";
 import {Ionicons} from "@expo/vector-icons";
 import {SelectedItemProvider} from "@/app/contexts/SelectedItemContext";
-import {MonumentProvider} from "@/app/contexts/MonumentsContext";
+import {MonumentProvider} from "@/app/contexts/LocationContext";
 import {SelectedLevelProvider} from "@/app/contexts/SelectedLevelContext";
 import Map from "@/app/Map";
 import Monument from "@/app/Monument";
